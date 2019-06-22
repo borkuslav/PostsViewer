@@ -5,6 +5,7 @@ target 'PostsViewer' do
 
   pod 'RxSwift', '~> 5'
   pod 'RxCocoa', '~> 5'
+  pod 'SwiftLint'
 
   target 'PostsViewerTests' do
     inherit! :search_paths

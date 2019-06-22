@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 class PostsViewController: UIViewController {
-    
+
     var viewModel: PostsViewModelType!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }

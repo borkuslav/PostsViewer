@@ -9,16 +9,15 @@
 import Foundation
 
 protocol PostsViewModelInput {
-    
+
 }
 
 protocol PostsViewModelOutput {
-    
+
 }
 
 protocol PostsViewModelType: PostsViewModelInput, PostsViewModelOutput {}
 
 class PostsViewModel: PostsViewModelType {
-    
-    
+
 }
