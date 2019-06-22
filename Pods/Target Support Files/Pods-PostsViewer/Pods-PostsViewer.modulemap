@@ -1,0 +1,6 @@
+framework module Pods_PostsViewer {
+  umbrella header "Pods-PostsViewer-umbrella.h"
+
+  export *
+  module * { export * }
+}
