@@ -13,6 +13,8 @@ import RxSwift
 class PostsViewController: UIViewController {
 
     var viewModel: PostsViewModelType!
+    
+    @IBOutlet weak var tableView: UITableView!
 
     private lazy var loadingView = LoadingView(parentView: view)
     private let disposeBag = DisposeBag()

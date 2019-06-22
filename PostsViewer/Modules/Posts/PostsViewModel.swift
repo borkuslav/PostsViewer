@@ -36,6 +36,20 @@ class PostsViewModel: PostsViewModelType {
         let showLoadingView = ReplaySubject<Bool>.create(bufferSize: 1)
         self.loadingViewVisible = showLoadingView.asDriver(onErrorJustReturn: false)
         showLoadingView.asObserver().onNext(true)
+
+//        NetworkDataProvider().getPosts()
+//            .subscribe(onNext: { posts in
+//                debugPrint("")
+//            }, onError: { error in
+//                debugPrint("")
+//            }).disposed(by: disposeBag)
+//
+//        NetworkDataProvider().getUsers()
+//            .subscribe(onNext: { posts in
+//                debugPrint("")
+//            }, onError: { error in
+//                debugPrint("")
+//            }).disposed(by: disposeBag)
     }
 
     deinit {
