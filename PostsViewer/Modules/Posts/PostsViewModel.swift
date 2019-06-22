@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 protocol PostsViewModelInput {
 
@@ -14,10 +16,29 @@ protocol PostsViewModelInput {
 
 protocol PostsViewModelOutput {
 
+    var loadingViewVisible: Driver<Bool> { get }
 }
 
 protocol PostsViewModelType: PostsViewModelInput, PostsViewModelOutput {}
 
 class PostsViewModel: PostsViewModelType {
 
+    // MARK: - Inputs
+
+    // MARK: - Outputs
+
+    var loadingViewVisible: Driver<Bool>
+
+    // MARK: -
+    private let disposeBag = DisposeBag()
+
+    init() {
+        let showLoadingView = ReplaySubject<Bool>.create(bufferSize: 1)
+        self.loadingViewVisible = showLoadingView.asDriver(onErrorJustReturn: false)
+        showLoadingView.asObserver().onNext(true)
+    }
+
+    deinit {
+        debugPrint("PostsViewModel")
+    }
 }
