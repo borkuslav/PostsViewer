@@ -21,6 +21,9 @@
 		A975FB9B22BE2E0C00CB79D5 /* DatabaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB9A22BE2E0C00CB79D5 /* DatabaseHelper.swift */; };
 		A975FBA022BE460900CB79D5 /* Posts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A975FB9E22BE460900CB79D5 /* Posts.storyboard */; };
 		A975FBA522BE49E500CB79D5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBA422BE49E500CB79D5 /* LoadingView.swift */; };
+		A975FBAA22BE75C900CB79D5 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBA922BE75C900CB79D5 /* Post.swift */; };
+		A975FBAC22BE75D200CB79D5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBAB22BE75D200CB79D5 /* User.swift */; };
+		A975FBAE22BE75DF00CB79D5 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBAD22BE75DF00CB79D5 /* Comment.swift */; };
 		E4791E8409EF0880E3FC0E53 /* Pods_PostsViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +59,9 @@
 		A975FB9A22BE2E0C00CB79D5 /* DatabaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseHelper.swift; sourceTree = "<group>"; };
 		A975FB9F22BE460900CB79D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = PostsViewer/Base.lproj/Posts.storyboard; sourceTree = SOURCE_ROOT; };
 		A975FBA422BE49E500CB79D5 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		A975FBA922BE75C900CB79D5 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		A975FBAB22BE75D200CB79D5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		A975FBAD22BE75DF00CB79D5 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D60C27510B63546D40CFBCEB /* Pods-PostsViewerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewerTests.release.xcconfig"; path = "Target Support Files/Pods-PostsViewerTests/Pods-PostsViewerTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -112,6 +118,7 @@
 		A96F48AB22BE1ADA00A73CBE /* PostsViewer */ = {
 			isa = PBXGroup;
 			children = (
+				A975FBA822BE75BA00CB79D5 /* Model */,
 				A975FBA122BE48D700CB79D5 /* Views */,
 				A96F48D022BE1C1C00A73CBE /* Common */,
 				A96F48CF22BE1C0700A73CBE /* Modules */,
@@ -184,6 +191,16 @@
 				A975FBA422BE49E500CB79D5 /* LoadingView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		A975FBA822BE75BA00CB79D5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A975FBA922BE75C900CB79D5 /* Post.swift */,
+				A975FBAB22BE75D200CB79D5 /* User.swift */,
+				A975FBAD22BE75DF00CB79D5 /* Comment.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		B3AEB89E70F3FD277AC664B3 /* Pods */ = {
@@ -421,11 +438,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A975FB8F22BE209B00CB79D5 /* PostsViewModel.swift in Sources */,
+				A975FBAA22BE75C900CB79D5 /* Post.swift in Sources */,
 				A975FB9122BE20AA00CB79D5 /* PostsCoordinator.swift in Sources */,
 				A975FB8D22BE208D00CB79D5 /* PostsViewController.swift in Sources */,
 				A96F48B522BE1ADA00A73CBE /* PostsViewer.xcdatamodeld in Sources */,
 				A975FB9B22BE2E0C00CB79D5 /* DatabaseHelper.swift in Sources */,
 				A975FB9622BE210100CB79D5 /* BaseCoordinator.swift in Sources */,
+				A975FBAE22BE75DF00CB79D5 /* Comment.swift in Sources */,
+				A975FBAC22BE75D200CB79D5 /* User.swift in Sources */,
 				A975FB9422BE20D300CB79D5 /* RootCoordinator.swift in Sources */,
 				A96F48AD22BE1ADA00A73CBE /* AppDelegate.swift in Sources */,
 				A975FBA522BE49E500CB79D5 /* LoadingView.swift in Sources */,
