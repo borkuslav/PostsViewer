@@ -18,6 +18,7 @@
 		A975FB9122BE20AA00CB79D5 /* PostsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB9022BE20AA00CB79D5 /* PostsCoordinator.swift */; };
 		A975FB9422BE20D300CB79D5 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB9322BE20D300CB79D5 /* RootCoordinator.swift */; };
 		A975FB9622BE210100CB79D5 /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB9522BE210100CB79D5 /* BaseCoordinator.swift */; };
+		A975FB9B22BE2E0C00CB79D5 /* DatabaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB9A22BE2E0C00CB79D5 /* DatabaseHelper.swift */; };
 		E4791E8409EF0880E3FC0E53 /* Pods_PostsViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 		A975FB9022BE20AA00CB79D5 /* PostsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsCoordinator.swift; sourceTree = "<group>"; };
 		A975FB9322BE20D300CB79D5 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
 		A975FB9522BE210100CB79D5 /* BaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
+		A975FB9A22BE2E0C00CB79D5 /* DatabaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseHelper.swift; sourceTree = "<group>"; };
 		A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D60C27510B63546D40CFBCEB /* Pods-PostsViewerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewerTests.release.xcconfig"; path = "Target Support Files/Pods-PostsViewerTests/Pods-PostsViewerTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,6 +110,7 @@
 			children = (
 				A96F48D022BE1C1C00A73CBE /* Common */,
 				A96F48CF22BE1C0700A73CBE /* Modules */,
+				A975FB9922BE2DF100CB79D5 /* Utils */,
 				A96F48AC22BE1ADA00A73CBE /* AppDelegate.swift */,
 				A96F48B622BE1ADB00A73CBE /* Assets.xcassets */,
 				A96F48B822BE1ADB00A73CBE /* LaunchScreen.storyboard */,
@@ -159,6 +162,14 @@
 				A975FB9322BE20D300CB79D5 /* RootCoordinator.swift */,
 			);
 			path = Root;
+			sourceTree = "<group>";
+		};
+		A975FB9922BE2DF100CB79D5 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				A975FB9A22BE2E0C00CB79D5 /* DatabaseHelper.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		B3AEB89E70F3FD277AC664B3 /* Pods */ = {
@@ -398,6 +409,7 @@
 				A975FB9122BE20AA00CB79D5 /* PostsCoordinator.swift in Sources */,
 				A975FB8D22BE208D00CB79D5 /* PostsViewController.swift in Sources */,
 				A96F48B522BE1ADA00A73CBE /* PostsViewer.xcdatamodeld in Sources */,
+				A975FB9B22BE2E0C00CB79D5 /* DatabaseHelper.swift in Sources */,
 				A975FB9622BE210100CB79D5 /* BaseCoordinator.swift in Sources */,
 				A975FB9422BE20D300CB79D5 /* RootCoordinator.swift in Sources */,
 				A96F48AD22BE1ADA00A73CBE /* AppDelegate.swift in Sources */,
