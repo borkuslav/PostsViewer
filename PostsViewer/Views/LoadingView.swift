@@ -26,7 +26,9 @@ class LoadingView: UIView {
 
         super.init(frame: parentView.frame)
 
-        self.addActivityIndicator()
+        // configure
+        backgroundColor = .white
+        addActivityIndicator()
 
         /// bind
         visible.asDriver(onErrorJustReturn: false)
@@ -68,6 +70,4 @@ class LoadingView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-
 }

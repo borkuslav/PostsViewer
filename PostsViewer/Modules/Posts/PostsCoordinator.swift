@@ -20,9 +20,14 @@ class PostsCoordinator: BaseCoordinator<Void> {
 
     override func start() -> Observable<Void> {
 
-        let viewModel = PostsViewModel()
+        guard let viewController = PostsViewController.initFromStoryboard(name: "Posts") else {
+            return Observable.never()
+        }
 
-        let viewController = PostsViewController()
+        let networkDataProvider = NetworkDataProvider()
+
+        let viewModel = PostsViewModel(postsProvider: networkDataProvider)
+
         viewController.viewModel = viewModel
 
         navigationController.pushViewController(viewController, animated: false)

@@ -9,9 +9,18 @@
 import Foundation
 import RxSwift
 
-enum NetworkError: Error {
-    case loadingResourceFailed
+enum NetworkError: LocalizedError {
+    case loadingResourceFailed(Int)
     case parsingResourceFailed
+
+    var errorDescription: String? {
+        switch self {
+        case .loadingResourceFailed(let code):
+            return "Loading data failed with code \(code)!"
+        case .parsingResourceFailed:
+            return "Parsing data failed!"
+        }
+    }
 }
 
 class URLFactory {
@@ -20,7 +29,19 @@ class URLFactory {
     static let comments = "http://jsonplaceholder.typicode.com/comments"
 }
 
-class NetworkDataProvider {
+protocol NetworkPostsProvider {
+    func getPosts() -> Observable<[Post]>
+}
+
+protocol NetworkUsersProvider {
+    func getUsers() -> Observable<[User]>
+}
+
+protocol NetworkCommentsProvider {
+    func getComments() -> Observable<[Comment]>
+}
+
+class NetworkDataProvider: NetworkPostsProvider, NetworkUsersProvider, NetworkCommentsProvider {
 
     func getPosts() -> Observable<[Post]> {
         return get(url: URL(string: URLFactory.postsUrlString)!)
@@ -43,9 +64,9 @@ class NetworkDataProvider {
                     if let items = try? JSONDecoder().decode([Model].self, from: data) {
                         return .just(items)
                     }
-                    return Observable.error(NetworkError.parsingResourceFailed)
+                    return .error(NetworkError.parsingResourceFailed)
                 }
-                return Observable.error(NetworkError.loadingResourceFailed)
+                return .error(NetworkError.loadingResourceFailed(response.statusCode))
             }
     }
 }

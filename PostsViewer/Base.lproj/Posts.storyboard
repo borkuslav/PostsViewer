@@ -18,6 +18,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Auc-HJ-IgQ">
+                                <rect key="frame" x="8" y="443" width="398" height="20.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Cdh-Va-e3k">
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -25,14 +31,18 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="Auc-HJ-IgQ" firstAttribute="leading" secondItem="xyd-SK-aDn" secondAttribute="leading" constant="8" id="82S-Xq-e7C"/>
                             <constraint firstItem="xyd-SK-aDn" firstAttribute="bottom" secondItem="Cdh-Va-e3k" secondAttribute="bottom" id="BDc-YJ-HTP"/>
                             <constraint firstItem="Cdh-Va-e3k" firstAttribute="top" secondItem="xyd-SK-aDn" secondAttribute="top" id="EyS-uO-mWQ"/>
+                            <constraint firstItem="xyd-SK-aDn" firstAttribute="trailing" secondItem="Auc-HJ-IgQ" secondAttribute="trailing" constant="8" id="Te0-O1-K1Z"/>
+                            <constraint firstItem="Auc-HJ-IgQ" firstAttribute="centerY" secondItem="xyd-SK-aDn" secondAttribute="centerY" id="k9v-qk-uXM"/>
                             <constraint firstItem="Cdh-Va-e3k" firstAttribute="leading" secondItem="xyd-SK-aDn" secondAttribute="leading" id="xm2-Xt-m2y"/>
                             <constraint firstItem="xyd-SK-aDn" firstAttribute="trailing" secondItem="Cdh-Va-e3k" secondAttribute="trailing" id="zb1-2F-tgB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xyd-SK-aDn"/>
                     </view>
                     <connections>
+                        <outlet property="errorMessageLabel" destination="Auc-HJ-IgQ" id="u16-98-T8n"/>
                         <outlet property="tableView" destination="Cdh-Va-e3k" id="YXq-md-AaU"/>
                     </connections>
                 </viewController>

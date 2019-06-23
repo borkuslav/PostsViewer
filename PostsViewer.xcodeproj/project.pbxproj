@@ -25,6 +25,7 @@
 		A975FBAC22BE75D200CB79D5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBAB22BE75D200CB79D5 /* User.swift */; };
 		A975FBAE22BE75DF00CB79D5 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBAD22BE75DF00CB79D5 /* Comment.swift */; };
 		A975FBB122BE783100CB79D5 /* NetworkDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBB022BE783100CB79D5 /* NetworkDataProvider.swift */; };
+		A975FBB322BEA61300CB79D5 /* Storyboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBB222BEA61300CB79D5 /* Storyboarded.swift */; };
 		E4791E8409EF0880E3FC0E53 /* Pods_PostsViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +65,7 @@
 		A975FBAB22BE75D200CB79D5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		A975FBAD22BE75DF00CB79D5 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		A975FBB022BE783100CB79D5 /* NetworkDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataProvider.swift; sourceTree = "<group>"; };
+		A975FBB222BEA61300CB79D5 /* Storyboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboarded.swift; sourceTree = "<group>"; };
 		A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D60C27510B63546D40CFBCEB /* Pods-PostsViewerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewerTests.release.xcconfig"; path = "Target Support Files/Pods-PostsViewerTests/Pods-PostsViewerTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -156,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				A975FB9522BE210100CB79D5 /* BaseCoordinator.swift */,
+				A975FBB222BEA61300CB79D5 /* Storyboarded.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 				A96F48AD22BE1ADA00A73CBE /* AppDelegate.swift in Sources */,
 				A975FBA522BE49E500CB79D5 /* LoadingView.swift in Sources */,
 				A975FBB122BE783100CB79D5 /* NetworkDataProvider.swift in Sources */,
+				A975FBB322BEA61300CB79D5 /* Storyboarded.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
