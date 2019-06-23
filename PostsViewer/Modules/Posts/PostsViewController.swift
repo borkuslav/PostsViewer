@@ -52,23 +52,18 @@ class PostsViewController: UIViewController, Storyboarded {
 
         viewModel.hideRefreshIndicator
             .drive(onNext: { [refreshControl] _ in
-                refreshControl.endRefreshing()
+                refreshControl.endRefreshing()                
             }).disposed(by: disposeBag)
 
         viewModel.loadingViewVisible
             .drive(loadingView.visible)
             .disposed(by: disposeBag)
 
-        viewModel.errorViewVisible
-            .drive(onNext: { [weak self] (visible, message) in
-                if visible {
-                    self?.errorMessageLabel.text = message
-                } else {
-                    self?.errorMessageLabel.text = nil
-                }
-            }).disposed(by: disposeBag)
+        viewModel.errorText
+            .drive(errorMessageLabel.rx.text)
+            .disposed(by: disposeBag)
 
-        viewModel.posts
+        viewModel.posts            
             .drive(
                 tableView.rx.items(cellIdentifier: postCellIdentifier, cellType: UITableViewCell.self)
             ) { (_, post, cell) in

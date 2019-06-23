@@ -24,7 +24,7 @@ protocol PostsViewModelOutput {
 
     var loadingViewVisible: Driver<Bool> { get }
 
-    var errorViewVisible: Driver<(Bool, String)> { get }
+    var errorText: Driver<String> { get }
 
     var hideRefreshIndicator: Driver<Void> { get }
 
@@ -45,7 +45,7 @@ class PostsViewModel: PostsViewModelType {
 
     var loadingViewVisible: Driver<Bool>
 
-    var errorViewVisible: Driver<(Bool, String)>
+    var errorText: Driver<String>
 
     var hideRefreshIndicator: Driver<Void>
 
@@ -58,60 +58,40 @@ class PostsViewModel: PostsViewModelType {
     init(dataProvider: DataProvider) {
         self.dataProvider = dataProvider
 
-        let loadingView = PublishSubject<Bool>()
-        let showLoadingView = loadingView.asObserver()
-        self.loadingViewVisible = showLoadingView.asDriver(onErrorJustReturn: false)
-
-        let errorView = PublishSubject<(Bool, String)>()
-        let showErrorView = errorView.asObserver()
-        self.errorViewVisible = showErrorView.asDriver(onErrorJustReturn: (false, ""))
-
-        let hidingRefreshIndicator = PublishSubject<Void>()
-        self.hideRefreshIndicator = hidingRefreshIndicator.asDriver(onErrorJustReturn: ())
-
-        let refreshingPosts = PublishSubject<Void>()
-        self.refreshPosts = refreshingPosts.asObserver()
+        let refreshPosts = PublishSubject<Void>()
 
         let viewDidLoad = PublishSubject<Void>()
-        self.viewDidLoad = viewDidLoad.asObserver()
 
-        let loadingPostsResult = Observable.merge(
-            viewDidLoad.asObservable()
-                .do(onNext: { _ in
-                    debugPrint("## loadPostsRequested")
-                    showLoadingView.onNext(true)
-                    showErrorView.onNext((false, ""))
-                }).map { _ -> Bool in false },
-            refreshingPosts.asObservable()
-                .do(onNext: { _ in
-                    debugPrint("## refreshPostsRequested")
-                    showLoadingView.onNext(false)
-                    showErrorView.onNext((false, ""))
-                }).map { _ -> Bool in true }
-            ).flatMap({ forceFromAPI in
-                return dataProvider.getPosts(forceFromAPI: forceFromAPI)
-                    .materialize()
-            }).share()
+        let posts = Observable.merge(
+            viewDidLoad.asObservable().map { _ -> Bool in false },
+            refreshPosts.asObservable().map { _ -> Bool in true }
+        ).flatMap({ forceFromAPI in
+            return dataProvider.getPosts(forceFromAPI: forceFromAPI)
+                .materialize()
+        }).share()
+
+        self.errorText = Observable<String>.merge(
+            posts.errors().map { $0.localizedDescription + "\nPull down to refresh" },
+            posts.elements().map { _ in "" },
+            refreshPosts.map { _ in "" }
+        ).asDriver(onErrorJustReturn: "")
+
+        self.hideRefreshIndicator = posts
+            .map { _ in () }
+            .asDriver(onErrorJustReturn: ())
+
+        self.loadingViewVisible = Observable<Bool>.merge(
+            viewDidLoad.asObservable().map { _ in true },
+            posts.map { _ in false }
+        ).asDriver(onErrorJustReturn: false)
 
         self.posts = Observable<[Post]>.merge(
-            loadingPostsResult.elements()
-                .do(onNext: { _ in
-                    debugPrint("## posts loaded")
-                    showLoadingView.asObserver().onNext(false)
-                    showErrorView.asObserver().onNext((false, ""))
-                    hidingRefreshIndicator.asObserver().onNext(())
-                }),
-            loadingPostsResult.errors()
-                .do(onNext: { errors in
-                    debugPrint("## loading posts failed")
-                    let message = errors.localizedDescription + "\nPull down to refresh" // localize
-                    showErrorView.asObserver().onNext((true, message))
-                    showLoadingView.asObserver().onNext(false)
-                    hidingRefreshIndicator.asObserver().onNext(())
-                }).flatMap({ _ -> Observable<[Post]> in
-                    return .just([])
-                })
-            ).asDriver(onErrorJustReturn: [])
+            posts.elements(),
+            posts.errors().flatMap { _ -> Observable<[Post]> in .just([])}
+        ).asDriver(onErrorJustReturn: [])
+
+        self.viewDidLoad = viewDidLoad.asObserver()
+        self.refreshPosts = refreshPosts.asObserver()
     }
 
     deinit {
