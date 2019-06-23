@@ -54,10 +54,10 @@ class LoadingView: UIView {
 
         parentView.addSubview(self)
         NSLayoutConstraint.activate([
-            activityIndicator.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            activityIndicator.topAnchor.constraint(equalTo: self.topAnchor),
-            activityIndicator.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            activityIndicator.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            parentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            parentView.topAnchor.constraint(equalTo: self.topAnchor),
+            parentView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            parentView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
         activityIndicator.startAnimating()
     }
