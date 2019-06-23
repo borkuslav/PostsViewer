@@ -16,7 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var coordinator: RootCoordinator?
     private let disposeBag = DisposeBag()
-    private let databaseHelper = DatabaseHelper()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -32,6 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        self.databaseHelper.saveContext()
+        DatabaseHelper.instance.saveContext()
     }
 }

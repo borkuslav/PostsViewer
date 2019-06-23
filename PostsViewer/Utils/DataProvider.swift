@@ -29,33 +29,58 @@ class URLFactory {
     static let comments = "http://jsonplaceholder.typicode.com/comments"
 }
 
-protocol NetworkPostsProvider {
-    func getPosts() -> Observable<[Post]>
+class DataProvider {
+
+    func getPosts(forceFromAPI: Bool) -> Observable<[Post]> {
+
+        let apiDataProvider = APIDataProvider()
+        return get(forceFromAPI: forceFromAPI,
+                   databaseFetch: DatabaseHelper.instance.getPosts,
+                   apiFetch: apiDataProvider.getAndCachePostsFromAPI)
+    }
+
+    private func get<Type>(
+        forceFromAPI: Bool,
+        databaseFetch: @escaping () -> Observable<[Type]>,
+        apiFetch: @escaping () -> Observable<[Type]>) -> Observable<[Type]> {
+
+        if forceFromAPI {
+            return apiFetch()
+        }
+        return databaseFetch()
+            .flatMap({ (items) -> Observable<[Type]> in
+                if items.isEmpty {
+                    return apiFetch()
+                }
+                return .just(items)
+            })
+    }
 }
 
-protocol NetworkUsersProvider {
-    func getUsers() -> Observable<[User]>
-}
+class APIDataProvider {
 
-protocol NetworkCommentsProvider {
-    func getComments() -> Observable<[Comment]>
-}
-
-class NetworkDataProvider: NetworkPostsProvider, NetworkUsersProvider, NetworkCommentsProvider {
-
-    func getPosts() -> Observable<[Post]> {
+    func getAndCachePostsFromAPI() -> Observable<[Post]> {
         return get(url: URL(string: URLFactory.postsUrlString)!)
+            .do(afterNext: { posts in
+                DatabaseHelper.instance.cachePosts(posts)
+            })
     }
 
     func getUsers() -> Observable<[User]> {
         return get(url: URL(string: URLFactory.usersUrlString)!)
+            .do(afterNext: { users in
+                DatabaseHelper.instance.cacheUsers(users)
+            })
     }
 
     func getComments() -> Observable<[Comment]> {
         return get(url: URL(string: URLFactory.comments)!)
+            .do(afterNext: { comments in
+                DatabaseHelper.instance.cacheComments(comments)
+            })
     }
 
-    func get<Model: Decodable>(url: URL) -> Observable<[Model]> {
+    private func get<Model: Decodable>(url: URL) -> Observable<[Model]> {
         let urlRequest = URLRequest(url: url)
         return URLSession.shared.rx
             .response(request: urlRequest)

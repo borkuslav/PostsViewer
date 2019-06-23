@@ -8,53 +8,151 @@
 
 import Foundation
 import CoreData
+import RxSwift
+
+enum DatabaseError: LocalizedError {
+    case noBackgroundContext
+}
 
 class DatabaseHelper {
 
-    // MARK: - Core Data stack
+    static let instance = DatabaseHelper()
 
-    lazy var persistentContainer: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-         */
-        let container = NSPersistentContainer(name: "PostsViewer")
-        container.loadPersistentStores(completionHandler: { (_, error) in
-            if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. 
-                // You should not use this function in a shipping application, although it may be useful during development.
+    // MARK: - Caching
 
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
+    func cachePosts(_ posts: [Post]) {
+        cache(
+            items: posts,
+            entityName: Entities.post.name,
+            cachedEntityForItem: { (entities: [PostEntity], item: Post) in
+                return entities.first { $0.id == item.id }
+            },
+            updateEntityWithItem: { (postEntity: PostEntity, post: Post) in
+                postEntity.id = Int32(post.id)
+                postEntity.userId = Int32(post.userId)
+                postEntity.body = post.body
+                postEntity.title = post.title
+            })
+    }
+
+    func getPosts() -> Observable<[Post]> {
+        return get(
+            entityName: Entities.post.name,
+            create: { (entity: PostEntity) -> Post in
+                return Post(
+                    userId: Int(entity.userId),
+                    id: Int(entity.id),
+                    title: entity.title ?? "",
+                    body: entity.body ?? "")
+            })
+    }
+
+    func cacheUsers(_ users: [User]) {
+
+    }
+
+    func cacheComments(_ comments: [Comment]) {
+        
+    }
 
     // MARK: - Core Data Saving support
 
     func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+        if let context = backgroundContext {
+            if context.hasChanges {
+                do {
+                    try context.save()
+                } catch {
+                    debugPrint(error)
+                }
             }
         }
     }
 
+    // MARK: - Private
+
+    private enum Entities: String {
+        case post
+        case user
+        case comment
+
+        var name: String {
+            return rawValue.capitalized + "Entity"
+        }
+    }
+
+    private init() {
+        self.createPersistentContainer()
+    }
+
+    private func cache<Type, EntityType: NSManagedObject>(
+        items: [Type],
+        entityName: String,
+        cachedEntityForItem: @escaping ([EntityType], Type) -> EntityType?,
+        updateEntityWithItem: @escaping (EntityType, Type) -> Void) {
+
+        guard let context = backgroundContext else {
+            return
+        }
+
+        context.perform {
+            let entities = (try? context.fetch(NSFetchRequest<EntityType>(entityName: entityName))) ?? []
+            items.forEach { item in
+                let entity = cachedEntityForItem(entities, item) ?? EntityType(context: context)
+                updateEntityWithItem(entity, item)
+            }
+            do {
+                try context.save()
+            } catch {
+                debugPrint(error.localizedDescription)
+            }
+        }
+    }
+
+    private func get<Type: Identifiable, EntityType: NSManagedObject>(
+        entityName: String,
+        create: @escaping (EntityType) -> Type) -> Observable<[Type]> {
+
+        return Observable.create { [backgroundContext] observer in
+            guard let context = backgroundContext else {
+                observer.onError(DatabaseError.noBackgroundContext)
+                return Disposables.create()
+            }
+
+            context.perform {
+                debugPrint("## loading entities")
+                do {
+                    let entities = try context.fetch(NSFetchRequest<EntityType>(entityName: entityName))
+                    debugPrint("## loading entities OK: \(entities.count)")
+                    let items: [Type] = entities.map(create)
+                        .sorted(by: { (left, right) in
+                            return left.id < right.id
+                        })
+                    observer.onNext(items)
+                    observer.onCompleted()
+                } catch {
+                    debugPrint("## loading entities NOK")
+                    observer.onError(DatabaseError.noBackgroundContext)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+
+    private var backgroundContext: NSManagedObjectContext?
+
+    private var persistentContainer: NSPersistentContainer?
+
+    private func createPersistentContainer() {
+
+        let container = NSPersistentContainer(name: "PostsViewer")
+        container.loadPersistentStores(completionHandler: { [weak self] (_, error) in
+            if let error = error as NSError? {
+                debugPrint(error)
+            } else {
+                self?.backgroundContext = container.newBackgroundContext()
+            }
+        })
+        persistentContainer = container
+    }
 }

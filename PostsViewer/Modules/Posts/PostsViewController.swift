@@ -27,6 +27,8 @@ class PostsViewController: UIViewController, Storyboarded {
 
         self.setupUI()
         self.setupBindings()
+
+        self.viewModel.viewDidLoad.onNext(())
     }
 
     private func setupUI() {

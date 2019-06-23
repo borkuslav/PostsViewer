@@ -13,11 +13,11 @@ import RxSwiftExt
 
 protocol PostsViewModelInput {
 
-    /// call when to load posts with loading view
-    var loadPosts: AnyObserver<Void> { get }
-
     /// call when to load posts without loading view
     var refreshPosts: AnyObserver<Void> { get }
+
+    /// call when viewDidLoad
+    var viewDidLoad: AnyObserver<Void> { get }
 }
 
 protocol PostsViewModelOutput {
@@ -37,9 +37,9 @@ class PostsViewModel: PostsViewModelType {
 
     // MARK: - Inputs
 
-    var loadPosts: AnyObserver<Void>
-
     var refreshPosts: AnyObserver<Void>
+
+    var viewDidLoad: AnyObserver<Void>
 
     // MARK: - Outputs
 
@@ -53,65 +53,65 @@ class PostsViewModel: PostsViewModelType {
 
     // MARK: -
     private let disposeBag = DisposeBag()
-    private let postsProvider: NetworkPostsProvider
+    private let dataProvider: DataProvider
 
-    init(postsProvider: NetworkPostsProvider) {
-        self.postsProvider = postsProvider
+    init(dataProvider: DataProvider) {
+        self.dataProvider = dataProvider
 
-        let loadingView = ReplaySubject<Bool>.create(bufferSize: 1)
+        let loadingView = PublishSubject<Bool>()
         let showLoadingView = loadingView.asObserver()
         self.loadingViewVisible = showLoadingView.asDriver(onErrorJustReturn: false)
 
-        let errorView = ReplaySubject<(Bool, String)>.create(bufferSize: 1)
+        let errorView = PublishSubject<(Bool, String)>()
         let showErrorView = errorView.asObserver()
         self.errorViewVisible = showErrorView.asDriver(onErrorJustReturn: (false, ""))
 
-        let hidingRefreshIndicator = ReplaySubject<Void>.create(bufferSize: 1)
+        let hidingRefreshIndicator = PublishSubject<Void>()
         self.hideRefreshIndicator = hidingRefreshIndicator.asDriver(onErrorJustReturn: ())
 
-        let loadingPosts = ReplaySubject<Void>.create(bufferSize: 1)
-        self.loadPosts = loadingPosts.asObserver()
-        let loadPostsRequested = loadingPosts.asObservable()
-
-        let refreshingPosts = ReplaySubject<Void>.create(bufferSize: 1)
+        let refreshingPosts = PublishSubject<Void>()
         self.refreshPosts = refreshingPosts.asObserver()
-        let refreshPostsRequested = refreshingPosts.asObservable()
+
+        let viewDidLoad = PublishSubject<Void>()
+        self.viewDidLoad = viewDidLoad.asObserver()
 
         let loadingPostsResult = Observable.merge(
-            loadPostsRequested
+            viewDidLoad.asObservable()
                 .do(onNext: { _ in
                     debugPrint("## loadPostsRequested")
                     showLoadingView.onNext(true)
                     showErrorView.onNext((false, ""))
-                }),
-            refreshPostsRequested
+                }).map { _ -> Bool in false },
+            refreshingPosts.asObservable()
                 .do(onNext: { _ in
                     debugPrint("## refreshPostsRequested")
                     showLoadingView.onNext(false)
                     showErrorView.onNext((false, ""))
-                })
-            ).flatMap({ _ in
-                return postsProvider.getPosts()
+                }).map { _ -> Bool in true }
+            ).flatMap({ forceFromAPI in
+                return dataProvider.getPosts(forceFromAPI: forceFromAPI)
                     .materialize()
             }).share()
 
-        self.posts = loadingPostsResult.elements()
-            .do(onNext: { _ in
-                debugPrint("## posts downloaded")
-                showLoadingView.asObserver().onNext(false)
-                showErrorView.asObserver().onNext((false, ""))
-                hidingRefreshIndicator.asObserver().onNext(())
-            })
-            .asDriver(onErrorJustReturn: [])
-
-        loadingPostsResult.errors().subscribe(onNext: { error in
-            debugPrint("## loading posts failed")
-            let message = error.localizedDescription + " Pull down to refresh" // localize
-            showErrorView.asObserver().onNext((true, message))
-            showLoadingView.asObserver().onNext(false)
-        }).disposed(by: disposeBag)
-
-        self.loadPosts.onNext(())
+        self.posts = Observable<[Post]>.merge(
+            loadingPostsResult.elements()
+                .do(onNext: { _ in
+                    debugPrint("## posts loaded")
+                    showLoadingView.asObserver().onNext(false)
+                    showErrorView.asObserver().onNext((false, ""))
+                    hidingRefreshIndicator.asObserver().onNext(())
+                }),
+            loadingPostsResult.errors()
+                .do(onNext: { errors in
+                    debugPrint("## loading posts failed")
+                    let message = errors.localizedDescription + "\nPull down to refresh" // localize
+                    showErrorView.asObserver().onNext((true, message))
+                    showLoadingView.asObserver().onNext(false)
+                    hidingRefreshIndicator.asObserver().onNext(())
+                }).flatMap({ _ -> Observable<[Post]> in
+                    return .just([])
+                })
+            ).asDriver(onErrorJustReturn: [])
     }
 
     deinit {

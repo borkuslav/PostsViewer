@@ -24,9 +24,9 @@ class PostsCoordinator: BaseCoordinator<Void> {
             return Observable.never()
         }
 
-        let networkDataProvider = NetworkDataProvider()
+        let dataProvider = DataProvider()
 
-        let viewModel = PostsViewModel(postsProvider: networkDataProvider)
+        let viewModel = PostsViewModel(dataProvider: dataProvider)
 
         viewController.viewModel = viewModel
 
