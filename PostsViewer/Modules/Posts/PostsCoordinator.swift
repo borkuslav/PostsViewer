@@ -24,7 +24,11 @@ class PostsCoordinator: BaseCoordinator<Void> {
             return Observable.never()
         }
 
-        let dataProvider = DataProvider()
+        let apiDataProvider = APIDataProviderImp()
+        let databaseDataProvider = DatabaseDataProviderImpl()
+        let dataProvider = DataProviderImpl(
+            apiDataProvider: apiDataProvider,
+            databaseDataProvider: databaseDataProvider)
 
         let viewModel = PostsViewModel(dataProvider: dataProvider)
 

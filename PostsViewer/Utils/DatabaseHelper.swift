@@ -35,17 +35,6 @@ class DatabaseHelper {
             })
     }
 
-    func getPosts() -> Observable<[Post]> {
-        return get(
-            entityName: Entities.post.name,
-            create: { (entity: PostEntity) -> Post in
-                return Post(
-                    userId: Int(entity.userId),
-                    id: Int(entity.id),
-                    title: entity.title ?? "",
-                    body: entity.body ?? "")
-            })
-    }
 
     func cacheUsers(_ users: [User]) {
 
@@ -70,16 +59,6 @@ class DatabaseHelper {
     }
 
     // MARK: - Private
-
-    private enum Entities: String {
-        case post
-        case user
-        case comment
-
-        var name: String {
-            return rawValue.capitalized + "Entity"
-        }
-    }
 
     private init() {
         self.createPersistentContainer()
@@ -109,37 +88,8 @@ class DatabaseHelper {
         }
     }
 
-    private func get<Type: Identifiable, EntityType: NSManagedObject>(
-        entityName: String,
-        create: @escaping (EntityType) -> Type) -> Observable<[Type]> {
 
-        return Observable.create { [backgroundContext] observer in
-            guard let context = backgroundContext else {
-                observer.onError(DatabaseError.noBackgroundContext)
-                return Disposables.create()
-            }
-
-            context.perform {
-                debugPrint("## loading entities")
-                do {
-                    let entities = try context.fetch(NSFetchRequest<EntityType>(entityName: entityName))
-                    debugPrint("## loading entities OK: \(entities.count)")
-                    let items: [Type] = entities.map(create)
-                        .sorted(by: { (left, right) in
-                            return left.id < right.id
-                        })
-                    observer.onNext(items)
-                    observer.onCompleted()
-                } catch {
-                    debugPrint("## loading entities NOK")
-                    observer.onError(DatabaseError.noBackgroundContext)
-                }
-            }
-            return Disposables.create()
-        }
-    }
-
-    private var backgroundContext: NSManagedObjectContext?
+    private(set) var backgroundContext: NSManagedObjectContext?
 
     private var persistentContainer: NSPersistentContainer?
 
