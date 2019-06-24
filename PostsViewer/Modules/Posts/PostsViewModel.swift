@@ -66,7 +66,8 @@ class PostsViewModel: PostsViewModelType {
             viewDidLoad.asObservable().map { _ -> Bool in false },
             refreshPosts.asObservable().map { _ -> Bool in true }
         ).flatMap({ forceFromAPI in
-            return dataProvider.getPosts(forceFromAPI: forceFromAPI)
+            return dataProvider
+                .getPosts(forceFromAPI: forceFromAPI)
                 .materialize()
         }).share()
 
@@ -82,7 +83,8 @@ class PostsViewModel: PostsViewModelType {
 
         self.loadingViewVisible = Observable<Bool>.merge(
             viewDidLoad.asObservable().map { _ in true },
-            posts.map { _ in false }
+            posts.elements().map { _ in false },
+            posts.errors().map { _ in false }
         ).asDriver(onErrorJustReturn: false)
 
         self.posts = Observable<[Post]>.merge(

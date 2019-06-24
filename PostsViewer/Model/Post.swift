@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Post: Identifiable, Decodable {
+struct Post: Identifiable, Decodable, Equatable {
     var userId: Int
     var id: Int
     var title: String
