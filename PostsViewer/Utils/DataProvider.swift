@@ -9,26 +9,6 @@
 import Foundation
 import RxSwift
 
-enum NetworkError: LocalizedError {
-    case loadingResourceFailed(Int)
-    case parsingResourceFailed
-
-    var errorDescription: String? {
-        switch self {
-        case .loadingResourceFailed(let code):
-            return "Loading data failed with code \(code)!"
-        case .parsingResourceFailed:
-            return "Parsing data failed!"
-        }
-    }
-}
-
-class URLFactory {
-    static let postsUrlString = "http://jsonplaceholder.typicode.com/posts"
-    static let usersUrlString = "http://jsonplaceholder.typicode.com/users"
-    static let comments = "http://jsonplaceholder.typicode.com/comments"
-}
-
 class DataProvider {
 
     func getPosts(forceFromAPI: Bool) -> Observable<[Post]> {
@@ -60,21 +40,21 @@ class DataProvider {
 class APIDataProvider {
 
     func getAndCachePostsFromAPI() -> Observable<[Post]> {
-        return get(url: URL(string: URLFactory.postsUrlString)!)
+        return get(url: URL(string: Constants.postsUrlString)!)
             .do(afterNext: { posts in
                 DatabaseHelper.instance.cachePosts(posts)
             })
     }
 
     func getUsers() -> Observable<[User]> {
-        return get(url: URL(string: URLFactory.usersUrlString)!)
+        return get(url: URL(string: Constants.usersUrlString)!)
             .do(afterNext: { users in
                 DatabaseHelper.instance.cacheUsers(users)
             })
     }
 
     func getComments() -> Observable<[Comment]> {
-        return get(url: URL(string: URLFactory.comments)!)
+        return get(url: URL(string: Constants.commentsUrlString)!)
             .do(afterNext: { comments in
                 DatabaseHelper.instance.cacheComments(comments)
             })
