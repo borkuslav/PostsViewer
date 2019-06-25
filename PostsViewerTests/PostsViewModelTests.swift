@@ -42,15 +42,15 @@ class PostsTests: XCTestCase {
         viewModel = PostsViewModel(dataProvider: dataProvider)
     }
 
-    func test_RefreshPostsOnPostsLoadedEmitsPosts() {
-        testOnPostsLoadedEmitPosts(observer: viewModel.refreshPosts)
+    func test_RefreshPosts_OnPostsLoaded_EmitsPosts() {
+        onPostsLoaded_EmitPosts(observer: viewModel.refreshPosts)
     }
 
-    func test_ViewDidLoadOnPostsLoadedEmitsPosts() {
-        testOnPostsLoadedEmitPosts(observer: viewModel.refreshPosts)
+    func test_ViewDidLoad_OnPostsLoaded_EmitsPosts() {
+        onPostsLoaded_EmitPosts(observer: viewModel.refreshPosts)
     }
 
-    private func testOnPostsLoadedEmitPosts(observer: AnyObserver<Void>) {
+    private func onPostsLoaded_EmitPosts(observer: AnyObserver<Void>) {
 
         let postsList = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
 
@@ -65,15 +65,15 @@ class PostsTests: XCTestCase {
         XCTAssertEqual(posts.events, [ Recorded.next(10, postsList)])
     }
 
-    func test_RefreshPostsOnPostsLoadFailEmitsEmptyPosts() {
-        testOnPostsLoadFailEmitEmptyPosts(observer: viewModel.refreshPosts)
+    func test_RefreshPosts_OnPostsLoadFail_EmitsEmptyPosts() {
+        onPostsLoadFail_EmitEmptyPosts(observer: viewModel.refreshPosts)
     }
 
-    func test_ViewDidLoadOnPostsLoadFailEmitsEmptyPosts() {
-        testOnPostsLoadFailEmitEmptyPosts(observer: viewModel.viewDidLoad)
+    func test_ViewDidLoad_OnPostsLoadFail_EmitsEmptyPosts() {
+        onPostsLoadFail_EmitEmptyPosts(observer: viewModel.viewDidLoad)
     }
 
-    private func testOnPostsLoadFailEmitEmptyPosts(observer: AnyObserver<Void>) {
+    private func onPostsLoadFail_EmitEmptyPosts(observer: AnyObserver<Void>) {
 
         _ = prepareDataProviderToFailure(emitPostsAtTestTime: 10, error: FakeError.error)
 
@@ -88,15 +88,15 @@ class PostsTests: XCTestCase {
         XCTAssertEqual(posts.events, [ Recorded.next(10, [])])
     }
 
-    func test_ViewDidLoadOnPostLoadedClearErrorText() {
-        testOnPostsLoadedClearErrorText(observer: viewModel.viewDidLoad)
+    func test_ViewDidLoad_OnPostLoaded_ClearErrorText() {
+        onPostsLoaded_ClearErrorText(observer: viewModel.viewDidLoad)
     }
 
     func test_RefreshPostsOnPostLoadedClearErrorText() {
-        testOnPostsLoadedClearErrorText(observer: viewModel.refreshPosts)
+        onPostsLoaded_ClearErrorText(observer: viewModel.refreshPosts)
     }
 
-    private func testOnPostsLoadedClearErrorText(observer: AnyObserver<Void>) {
+    private func onPostsLoaded_ClearErrorText(observer: AnyObserver<Void>) {
 
         _ = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
 
@@ -114,19 +114,19 @@ class PostsTests: XCTestCase {
         ])
     }
 
-    func test_ViewDidLoadOnPostLoadFailEmitErrorText() {
-        testPostLoadFailEmitErrorText(
+    func test_ViewDidLoad_OnPostLoadFail_EmitErrorText() {
+        onPostLoadFail_EmitErrorText(
             observer: viewModel.viewDidLoad,
             error: NetworkError.operationFailedPleaseRetry)
     }
 
-    func test_RefreshPostsOnPostLoadFailEmitErrorText() {
-        testPostLoadFailEmitErrorText(
+    func test_RefreshPosts_OnPostLoadFail_EmitErrorText() {
+        onPostLoadFail_EmitErrorText(
             observer: viewModel.refreshPosts,
             error: NetworkError.loadingResourceFailed(404))
     }
 
-    private func testPostLoadFailEmitErrorText(observer: AnyObserver<Void>, error: Error) {
+    private func onPostLoadFail_EmitErrorText(observer: AnyObserver<Void>, error: Error) {
 
         _ = prepareDataProviderToFailure(
             emitPostsAtTestTime: 10,
@@ -146,16 +146,16 @@ class PostsTests: XCTestCase {
         ])
     }
 
-    func test_RefreshPostsOnPostsLoadedHideLoadingView() {
+    func test_RefreshPosts_OnPostsLoaded_HideLoadingView() {
         _ = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
-        testOnPostsLoadedOrFailHideLoadingView(
+        test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.refreshPosts,
             expectedEvents: [ .next(10, false) ])
     }
 
-    func test_ViewDidLoadOnPostsLoadedHideLoadingView() {
+    func test_ViewDidLoad_OnPostsLoaded_HideLoadingView() {
         _ = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
-        testOnPostsLoadedOrFailHideLoadingView(
+        test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.viewDidLoad,
             expectedEvents: [
                 .next(0, true),
@@ -163,16 +163,16 @@ class PostsTests: XCTestCase {
             ])
     }
 
-    func test_RefreshPostsOnPostsLoadFailHideLoadingView() {
+    func test_RefreshPosts_OnPostsLoadFail_HideLoadingView() {
         prepareDataProviderToFailure(emitPostsAtTestTime: 10, error: NetworkError.operationFailedPleaseRetry)
-        testOnPostsLoadedOrFailHideLoadingView(
+        test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.refreshPosts,
             expectedEvents: [ .next(10, false) ])
     }
 
-    func test_ViewDidLoadOnPostsLoadFailHideLoadingView() {
+    func test_ViewDidLoad_OnPostsLoadFail_HideLoadingView() {
         prepareDataProviderToFailure(emitPostsAtTestTime: 10, error: NetworkError.operationFailedPleaseRetry)
-        testOnPostsLoadedOrFailHideLoadingView(
+        test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.viewDidLoad,
             expectedEvents: [
                 .next(0, true),
@@ -180,7 +180,7 @@ class PostsTests: XCTestCase {
             ])
     }
 
-    private func testOnPostsLoadedOrFailHideLoadingView(
+    private func test_OnPostsLoadedOrFail_HideLoadingView(
         observer: AnyObserver<()>,
         expectedEvents: [Recorded<Event<Bool>>]) {
 
@@ -195,15 +195,15 @@ class PostsTests: XCTestCase {
         XCTAssertEqual(loadingViewVisible.events, expectedEvents)
     }
 
-    func test_RefreshPostsForcesAPICall() {
-        testForcesAPICall(observer: viewModel.refreshPosts, shouldForce: true)
+    func test_RefreshPosts_ForcesAPICall() {
+        test_ForcesAPICall(observer: viewModel.refreshPosts, shouldForce: true)
     }
 
-    func test_ViewDidLoadNotForcesAPICall() {
-        testForcesAPICall(observer: viewModel.viewDidLoad, shouldForce: false)
+    func test_ViewDidLoad_NotForcesAPICall() {
+        test_ForcesAPICall(observer: viewModel.viewDidLoad, shouldForce: false)
     }
 
-    private func testForcesAPICall(observer: AnyObserver<()>, shouldForce: Bool) {
+    private func test_ForcesAPICall(observer: AnyObserver<()>, shouldForce: Bool) {
         let postsList = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
 
         _ = createPostsTestableObserver(forPosts: postsList)
