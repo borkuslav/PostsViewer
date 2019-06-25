@@ -9,7 +9,7 @@
 import Foundation
 
 class Constants {
-    static let postsUrlString = "http://jssonplaceholder.typicode.com/posts"
+    static let postsUrlString = "http://jsonplaceholder.typicode.com/posts"
     static let usersUrlString = "http://jsonplaceholder.typicode.com/users"
     static let commentsUrlString = "http://jsonplaceholder.typicode.com/comments"
 }

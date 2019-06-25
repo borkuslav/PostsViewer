@@ -63,11 +63,11 @@ class PostsViewModel: PostsViewModelType {
         let viewDidLoad = PublishSubject<Void>()
 
         let posts = Observable.merge(
-            viewDidLoad.asObservable().map { _ -> Bool in false },
-            refreshPosts.asObservable().map { _ -> Bool in true }
-        ).flatMap({ forceFromAPI in
+            viewDidLoad.asObservable().map { _ -> Bool in true },
+            refreshPosts.asObservable().map { _ -> Bool in false }
+        ).flatMap({ withDatabaseFallback in
             return dataProvider
-                .getPosts(forceFromAPI: forceFromAPI)
+                .getPosts(withDatabaseFallback: withDatabaseFallback)
                 .materialize()
         }).share()
 

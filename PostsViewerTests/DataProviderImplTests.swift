@@ -46,6 +46,24 @@ class DataProviderImplTests: XCTestCase {
             apiDataProvider: apiDataProvider,
             databaseDataProvider: databaseDataProvider)
     }
+
+    func test_LoadPostsFromAPI_WithSuccess() {
+        let postsList: [Post] = TestDataParser().loadAndParsePosts()!
+
+        
+    }
+
+    func test_FailLoadingPostsFromAPI_WithoutDatabaseFallback() {
+
+    }
+
+    func test_FailLoadingPostsFromAPI_WithDatabaseFallback_WhenNoCachedPosts() {
+
+    }
+
+    func test_FailLoadingPostsFromAPI_WithDatabaseFallback_WhenCachedPostsAvailable() {
+
+    }
 }
 
 class FakeAPIDataProvider: APIDataProvider {

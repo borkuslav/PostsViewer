@@ -26,7 +26,7 @@ import RxBlocking
     -> should emit [loadingViewVisible:true]
 
  */
-class PostsTests: XCTestCase {
+class PostsViewModelTests: XCTestCase {
 
     var scheduler: TestScheduler!
     var disposeBag: DisposeBag!
@@ -195,28 +195,28 @@ class PostsTests: XCTestCase {
         XCTAssertEqual(loadingViewVisible.events, expectedEvents)
     }
 
-    func test_RefreshPosts_ForcesAPICall() {
-        test_ForcesAPICall(observer: viewModel.refreshPosts, shouldForce: true)
+    func test_RefreshPosts_NotUseDatabaseFallback() {
+        test_UseDatabaseFallback(observer: viewModel.refreshPosts, shouldUseDatabaseFallback: false)
     }
 
-    func test_ViewDidLoad_NotForcesAPICall() {
-        test_ForcesAPICall(observer: viewModel.viewDidLoad, shouldForce: false)
+    func test_ViewDidLoad_UseDatabaseFallback() {
+        test_UseDatabaseFallback(observer: viewModel.viewDidLoad, shouldUseDatabaseFallback: true)
     }
 
-    private func test_ForcesAPICall(observer: AnyObserver<()>, shouldForce: Bool) {
+    private func test_UseDatabaseFallback(observer: AnyObserver<()>, shouldUseDatabaseFallback: Bool) {
         let postsList = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
 
         _ = createPostsTestableObserver(forPosts: postsList)
 
-        let forceFromAPI = scheduler.createObserver(Bool.self)
-        dataProvider.forceFromAPI.asObservable()
-            .bind(to: forceFromAPI)
+        let withDatabaseFallback = scheduler.createObserver(Bool.self)
+        dataProvider.withDatabaseFallback.asObservable()
+            .bind(to: withDatabaseFallback)
             .disposed(by: disposeBag)
 
         fakeEvent(observer: observer, atTestTime: 0)
         scheduler.start()
 
-        XCTAssertEqual(forceFromAPI.events, [.next(0, shouldForce)])
+        XCTAssertEqual(withDatabaseFallback.events, [.next(0, shouldUseDatabaseFallback)])
     }
 
     private func prepareDataProviderToSuccess(emitPostsAtTestTime testTime: TestTime) -> [Post] {
@@ -256,10 +256,10 @@ private class DataProviderFake: DataProvider {
 
     var posts: Observable<[Post]>!
 
-    var forceFromAPI = PublishSubject<Bool>()
+    var withDatabaseFallback = PublishSubject<Bool>()
 
-    func getPosts(forceFromAPI: Bool) -> Observable<[Post]> {
-        self.forceFromAPI.onNext(forceFromAPI)
+    func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
+        self.withDatabaseFallback.onNext(withDatabaseFallback)
         return posts
     }
 }

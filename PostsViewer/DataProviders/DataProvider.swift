@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 protocol DataProvider {
-    func getPosts(forceFromAPI: Bool) -> Observable<[Post]>
+    func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]>
 }
 
 class DataProviderImpl {
@@ -24,26 +24,30 @@ class DataProviderImpl {
     }
 
     private func get<Type>(
-        forceFromAPI: Bool,
+        withDatabaseFallback: Bool,
         databaseFetch: @escaping () -> Observable<[Type]>,
         apiFetch: @escaping () -> Observable<[Type]>) -> Observable<[Type]> {
 
-        if forceFromAPI {
-            return apiFetch()
-        }
-        return databaseFetch()
-            .flatMap({ (items) -> Observable<[Type]> in
-                if items.isEmpty {
-                    return apiFetch()
+        return apiFetch()
+            .catchError({ (error) -> Observable<[Type]> in
+                if withDatabaseFallback {
+                    return databaseFetch()
+                        .flatMap { items -> Observable<[Type]> in
+                            if items.isEmpty {
+                                return .error(error)
+                            } else {
+                                return .just(items)
+                            }
+                        }
                 }
-                return .just(items)
+                return .error(error)
             })
     }
 }
 
 extension DataProviderImpl: DataProvider {
-    func getPosts(forceFromAPI: Bool) -> Observable<[Post]> {
-        return get(forceFromAPI: forceFromAPI,
+    func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
+        return get(withDatabaseFallback: withDatabaseFallback,
                    databaseFetch: databaseDataProvider.getPosts,
                    apiFetch: apiDataProvider.getAndCachePostsFromAPI)
     }

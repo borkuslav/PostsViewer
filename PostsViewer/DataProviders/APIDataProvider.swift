@@ -29,7 +29,7 @@ class APIDataProviderImp {
                     return .error(NetworkError.parsingResourceFailed)
                 }
                 return .error(NetworkError.loadingResourceFailed(response.statusCode))
-            }.catchError { _ in .error(NetworkError.operationFailedPleaseRetry) }
+            }            
     }
 }
 
