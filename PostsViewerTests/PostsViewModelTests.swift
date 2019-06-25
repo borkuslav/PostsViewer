@@ -50,7 +50,7 @@ class PostsTests: XCTestCase {
         testOnPostsLoadedEmitPosts(observer: viewModel.refreshPosts)
     }
 
-    func testOnPostsLoadedEmitPosts(observer: AnyObserver<Void>) {
+    private func testOnPostsLoadedEmitPosts(observer: AnyObserver<Void>) {
 
         let postsList = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
 
