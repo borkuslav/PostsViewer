@@ -72,24 +72,26 @@ class PostsViewModel: PostsViewModelType {
         }).share()
 
         self.errorText = Observable<String>.merge(
-            posts.errors().map { $0.localizedDescription + "\nPull down to refresh" },
+            posts.errors().map {
+                return $0.localizedDescription + "\nPull down to refresh"                
+            },
             posts.elements().map { _ in "" },
             refreshPosts.map { _ in "" }
-        ).asDriver(onErrorJustReturn: "")
+        ).asDriver(onErrorDriveWith: .never())
 
         self.hideRefreshIndicator = posts
             .map { _ in () }
-            .asDriver(onErrorJustReturn: ())
+            .asDriver(onErrorDriveWith: .never())
 
         self.loadingViewVisible = Observable<Bool>.merge(
             viewDidLoad.asObservable().map { _ in true },
             posts.elements().map { _ in false },
             posts.errors().map { _ in false }
-        ).asDriver(onErrorJustReturn: false)
+        ).asDriver(onErrorDriveWith: .never())
 
         self.posts = Observable<[Post]>.merge(
             posts.elements(),
-            posts.errors().flatMap { _ -> Observable<[Post]> in .just([])}
+            posts.errors().flatMap { _ -> Observable<[Post]> in .just([]) }
         ).asDriver(onErrorJustReturn: [])
 
         self.viewDidLoad = viewDidLoad.asObserver()

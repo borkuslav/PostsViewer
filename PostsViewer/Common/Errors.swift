@@ -11,6 +11,7 @@ import Foundation
 enum NetworkError: LocalizedError {
     case loadingResourceFailed(Int)
     case parsingResourceFailed
+    case operationFailedPleaseRetry
 
     var errorDescription: String? {
         switch self {
@@ -18,6 +19,8 @@ enum NetworkError: LocalizedError {
             return "Loading data failed with code \(code)!"
         case .parsingResourceFailed:
             return "Parsing data failed!"
+        case .operationFailedPleaseRetry:
+            return "Operation failed. Please try again."
         }
     }
 }
