@@ -62,7 +62,7 @@ class PostsViewModelTests: XCTestCase {
         fakeEvent(observer: observer, atTestTime: 0)
         scheduler.start()
 
-        XCTAssertEqual(posts.events, [ Recorded.next(10, postsList)])
+        XCTAssertEqual(posts.events, [ .next(10, postsList)])
     }
 
     func test_RefreshPosts_OnPostsLoadFail_EmitsEmptyPosts() {
@@ -85,7 +85,7 @@ class PostsViewModelTests: XCTestCase {
         fakeEvent(observer: observer, atTestTime: 0)
         scheduler.start()
 
-        XCTAssertEqual(posts.events, [ Recorded.next(10, [])])
+        XCTAssertEqual(posts.events, [ .next(10, [])])
     }
 
     func test_ViewDidLoad_OnPostLoaded_ClearErrorText() {
@@ -109,8 +109,8 @@ class PostsViewModelTests: XCTestCase {
         scheduler.start()
 
         XCTAssertEqual(errorText.events, [
-            Recorded.next(0, ""),
-            Recorded.next(10, "")
+            .next(0, ""),
+            .next(10, "")
         ])
     }
 
@@ -141,8 +141,8 @@ class PostsViewModelTests: XCTestCase {
         scheduler.start()
 
         XCTAssertEqual(errorText.events, [
-            Recorded.next(0, ""),
-            Recorded.next(10, error.localizedDescription + "\nPull down to refresh")
+            .next(0, ""),
+            .next(10, error.localizedDescription + "\nPull down to refresh")
         ])
     }
 

@@ -21,7 +21,6 @@
 		A96F48B522BE1ADA00A73CBE /* PostsViewer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A96F48B322BE1ADA00A73CBE /* PostsViewer.xcdatamodeld */; };
 		A96F48B722BE1ADB00A73CBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A96F48B622BE1ADB00A73CBE /* Assets.xcassets */; };
 		A96F48BA22BE1ADB00A73CBE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A96F48B822BE1ADB00A73CBE /* LaunchScreen.storyboard */; };
-		A96F48C522BE1ADC00A73CBE /* PostsViewerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96F48C422BE1ADC00A73CBE /* PostsViewerTests.swift */; };
 		A975FB8D22BE208D00CB79D5 /* PostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB8C22BE208D00CB79D5 /* PostsViewController.swift */; };
 		A975FB8F22BE209B00CB79D5 /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB8E22BE209B00CB79D5 /* PostsViewModel.swift */; };
 		A975FB9122BE20AA00CB79D5 /* PostsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FB9022BE20AA00CB79D5 /* PostsCoordinator.swift */; };
@@ -69,7 +68,6 @@
 		A96F48B922BE1ADB00A73CBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A96F48BB22BE1ADB00A73CBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A96F48C022BE1ADC00A73CBE /* PostsViewerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostsViewerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A96F48C422BE1ADC00A73CBE /* PostsViewerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewerTests.swift; sourceTree = "<group>"; };
 		A96F48C622BE1ADC00A73CBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A975FB8C22BE208D00CB79D5 /* PostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewController.swift; sourceTree = "<group>"; };
 		A975FB8E22BE209B00CB79D5 /* PostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
@@ -178,7 +176,6 @@
 			isa = PBXGroup;
 			children = (
 				A93E43C122C162E70090EE1A /* TestData */,
-				A96F48C422BE1ADC00A73CBE /* PostsViewerTests.swift */,
 				A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */,
 				A93E43C422C2B0A70090EE1A /* DataProviderImplTests.swift */,
 				A96F48C622BE1ADC00A73CBE /* Info.plist */,
@@ -516,7 +513,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A93E43C522C2B0A70090EE1A /* DataProviderImplTests.swift in Sources */,
-				A96F48C522BE1ADC00A73CBE /* PostsViewerTests.swift in Sources */,
 				A93E43C322C1632E0090EE1A /* TestDataParser.swift in Sources */,
 				A93E43B322C14D390090EE1A /* PostsViewModelTests.swift in Sources */,
 			);
