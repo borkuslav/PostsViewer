@@ -25,43 +25,14 @@ protocol DatabaseDataProvider {
     func cachePosts(_ posts: [Post])
 }
 
-class DatabaseDataProviderImpl {
-
-    private func get<Type: Identifiable, EntityType: NSManagedObject>(
-        entityName: String,
-        create: @escaping (EntityType) -> Type) -> Observable<[Type]> {
-
-        return Observable.create { observer in
-            guard let context = DatabaseHelper.instance.backgroundContext else {
-                observer.onError(DatabaseError.noBackgroundContext)
-                return Disposables.create()
-            }
-
-            context.perform {
-                debugPrint("## loading entities")
-                do {
-                    let entities = try context.fetch(NSFetchRequest<EntityType>(entityName: entityName))
-                    debugPrint("## loading entities OK: \(entities.count)")
-                    let items: [Type] = entities.map(create)
-                        .sorted(by: { (left, right) in
-                            return left.id < right.id
-                        })
-                    observer.onNext(items)
-                    observer.onCompleted()
-                } catch {
-                    debugPrint("## loading entities NOK")
-                    observer.onError(DatabaseError.noBackgroundContext)
-                }
-            }
-            return Disposables.create()
-        }
-    }
+final class DatabaseDataProviderImpl {
+    
 }
 
 extension DatabaseDataProviderImpl: DatabaseDataProvider {
 
     func getPosts() -> Observable<[Post]> {
-        return get(
+        return DatabaseHelper.instance.get(
             entityName: Entities.post.name,
             create: { (entity: PostEntity) -> Post in
                 return Post(

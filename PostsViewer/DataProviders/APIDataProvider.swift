@@ -15,7 +15,7 @@ protocol APIDataProvider {
     func getComments() -> Observable<[Comment]>
 }
 
-class APIDataProviderImp {
+final class APIDataProviderImp {
 
     private func get<Model: Decodable>(url: URL) -> Observable<[Model]> {
         let urlRequest = URLRequest(url: url)

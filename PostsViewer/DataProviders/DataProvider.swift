@@ -13,7 +13,7 @@ protocol DataProvider {
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]>
 }
 
-class DataProviderImpl {
+final class DataProviderImpl {
 
     private var apiDataProvider: APIDataProvider
     private var databaseDataProvider: DatabaseDataProvider
@@ -24,13 +24,13 @@ class DataProviderImpl {
     }
 
     private func get<Type>(
-        withDatabaseFallback: Bool,
-        databaseFetch: @escaping () -> Observable<[Type]>,
         apiFetch: @escaping () -> Observable<[Type]>,
-        cachingFunction: @escaping ([Type]) -> Void) -> Observable<[Type]> {
+        cachingFunction: @escaping ([Type]) -> Void,
+        withDatabaseFallback: Bool,
+        databaseFetch: @escaping () -> Observable<[Type]>) -> Observable<[Type]> {
 
         return apiFetch()
-            .do(onNext: { items in
+            .do(afterNext: { items in
                 cachingFunction(items)
             })
             .catchError({ (error) -> Observable<[Type]> in
@@ -51,9 +51,9 @@ class DataProviderImpl {
 
 extension DataProviderImpl: DataProvider {
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
-        return get(withDatabaseFallback: withDatabaseFallback,
-                   databaseFetch: databaseDataProvider.getPosts,
-                   apiFetch: apiDataProvider.getPosts,
-                   cachingFunction: databaseDataProvider.cachePosts)
+        return get(apiFetch: apiDataProvider.getPosts,
+                   cachingFunction: databaseDataProvider.cachePosts,
+                   withDatabaseFallback: withDatabaseFallback,
+                   databaseFetch: databaseDataProvider.getPosts)
     }
 }
