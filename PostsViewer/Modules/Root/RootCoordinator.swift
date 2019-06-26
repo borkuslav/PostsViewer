@@ -11,20 +11,20 @@ import RxSwift
 
 class RootCoordinator: BaseCoordinator<Void> {
 
-    private var window: UIWindow
+    private let window: UIWindow
 
     init(window: UIWindow) {
         self.window = window
     }
 
-    override func start() -> Observable<Void> {
+    override func start(withTransition transitionType: TransitionType) -> Observable<Void> {
 
         let navigationController = UINavigationController()
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
 
         let postsCoordinator = PostsCoordinator(navigationController: navigationController)
-        return coordinate(to: postsCoordinator)
+        return coordinate(to: postsCoordinator, withTransition: .push(animated: false))
     }
 
 }

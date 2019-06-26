@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    private var coordinator: RootCoordinator?
+    private var coordinator: CoordinatorType?
     private let disposeBag = DisposeBag()
 
     func application(_ application: UIApplication,
@@ -22,10 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let window = UIWindow()
 
-        coordinator = RootCoordinator(window: window)
-        coordinator?.start()
+        let rootCoordinator = RootCoordinator(window: window)
+        rootCoordinator.start(withTransition: .custom)
             .subscribe()
             .disposed(by: disposeBag)
+        coordinator = rootCoordinator
 
         return true
     }

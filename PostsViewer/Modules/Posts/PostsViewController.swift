@@ -13,6 +13,7 @@ import RxSwift
 class PostsViewController: UIViewController, Storyboarded {
 
     var viewModel: PostsViewModelType!
+    var coordinator: CoordinatorType!
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var errorMessageLabel: UILabel!
