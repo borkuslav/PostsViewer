@@ -18,6 +18,9 @@ protocol PostsViewModelInput {
 
     /// call when viewDidLoad
     var viewDidLoad: AnyObserver<Void> { get }
+
+    /// call on tapping on post
+    var selectPost: AnyObserver<Post> { get }
 }
 
 protocol PostsViewModelOutput {
@@ -29,6 +32,8 @@ protocol PostsViewModelOutput {
     var hideRefreshIndicator: Driver<Void> { get }
 
     var posts: Driver<[Post]> { get }
+
+    var selectedPost: Driver<Post> { get }
 }
 
 protocol PostsViewModelType: PostsViewModelInput, PostsViewModelOutput {}
@@ -41,6 +46,8 @@ class PostsViewModel: PostsViewModelType {
 
     var viewDidLoad: AnyObserver<Void>
 
+    var selectPost: AnyObserver<Post>
+
     // MARK: - Outputs
 
     var loadingViewVisible: Driver<Bool>
@@ -50,6 +57,8 @@ class PostsViewModel: PostsViewModelType {
     var hideRefreshIndicator: Driver<Void>
 
     var posts: Driver<[Post]>
+
+    var selectedPost: Driver<Post>
 
     // MARK: -
     private let disposeBag = DisposeBag()
@@ -96,6 +105,10 @@ class PostsViewModel: PostsViewModelType {
 
         self.viewDidLoad = viewDidLoad.asObserver()
         self.refreshPosts = refreshPosts.asObserver()
+
+        let selectingPosts = PublishSubject<Post>()
+        self.selectPost = selectingPosts.asObserver()
+        self.selectedPost = selectingPosts.asDriver(onErrorDriveWith: .never())
     }
 
     deinit {

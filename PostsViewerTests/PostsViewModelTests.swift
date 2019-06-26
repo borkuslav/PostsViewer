@@ -219,6 +219,23 @@ class PostsViewModelTests: XCTestCase {
         XCTAssertEqual(withDatabaseFallback.events, [.next(0, shouldUseDatabaseFallback)])
     }
 
+    func test_SelectPost_EmitPost() {
+
+        let post = TestDataParser().loadAndParsePosts()![0]
+
+        let selectedPost = scheduler.createObserver(Post.self)
+        viewModel.selectedPost
+            .drive(selectedPost)
+            .disposed(by: disposeBag)
+
+        scheduler.createColdObservable([.next(10, post)])
+            .bind(to: viewModel.selectPost)
+            .disposed(by: disposeBag)
+         scheduler.start()
+
+        XCTAssertEqual(selectedPost.events, [.next(10, post)])
+    }
+
     private func prepareDataProviderToSuccess(emitPostsAtTestTime testTime: TestTime) -> [Post] {
         let postsList: [Post] = TestDataParser().loadAndParsePosts()!
         dataProvider.posts = scheduler

@@ -31,12 +31,19 @@ class PostsCoordinator: BaseCoordinator<Void> {
             databaseDataProvider: databaseDataProvider)
 
         let viewModel = PostsViewModel(dataProvider: dataProvider)
-
         viewController.viewModel = viewModel
-
         navigationController.pushViewController(viewController, animated: false)
 
+        viewModel.selectedPost
+            .drive(onNext: { [weak self] post in
+                self?.pushPostDetails(post: post)
+            }).disposed(by: disposeBag)
+
         return Observable.never()
+    }
+
+    private func pushPostDetails(post: Post) {
+        debugPrint("")
     }
 
 }

@@ -70,5 +70,10 @@ class PostsViewController: UIViewController, Storyboarded {
                 cell.textLabel?.numberOfLines = 0
                 cell.textLabel?.text = post.title
             }.disposed(by: disposeBag)
+
+        tableView.rx.modelSelected(Post.self)
+            .asDriver()
+            .drive(viewModel.selectPost)
+            .disposed(by: disposeBag)
     }
 }
