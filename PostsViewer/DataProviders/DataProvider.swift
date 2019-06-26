@@ -26,9 +26,13 @@ class DataProviderImpl {
     private func get<Type>(
         withDatabaseFallback: Bool,
         databaseFetch: @escaping () -> Observable<[Type]>,
-        apiFetch: @escaping () -> Observable<[Type]>) -> Observable<[Type]> {
+        apiFetch: @escaping () -> Observable<[Type]>,
+        cachingFunction: @escaping ([Type]) -> Void) -> Observable<[Type]> {
 
         return apiFetch()
+            .do(onNext: { items in
+                cachingFunction(items)
+            })
             .catchError({ (error) -> Observable<[Type]> in
                 if withDatabaseFallback {
                     return databaseFetch()
@@ -49,6 +53,7 @@ extension DataProviderImpl: DataProvider {
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
         return get(withDatabaseFallback: withDatabaseFallback,
                    databaseFetch: databaseDataProvider.getPosts,
-                   apiFetch: apiDataProvider.getAndCachePostsFromAPI)
+                   apiFetch: apiDataProvider.getPosts,
+                   cachingFunction: databaseDataProvider.cachePosts)
     }
 }

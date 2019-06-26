@@ -22,6 +22,7 @@ enum Entities: String {
 
 protocol DatabaseDataProvider {
     func getPosts() -> Observable<[Post]>
+    func cachePosts(_ posts: [Post])
 }
 
 class DatabaseDataProviderImpl {
@@ -68,6 +69,21 @@ extension DatabaseDataProviderImpl: DatabaseDataProvider {
                     id: Int(entity.id),
                     title: entity.title ?? "",
                     body: entity.body ?? "")
+        })
+    }
+
+    func cachePosts(_ posts: [Post]) {
+        DatabaseHelper.instance.cache(
+            items: posts,
+            entityName: Entities.post.name,
+            cachedEntityForItem: { (entities: [PostEntity], item: Post) in
+                return entities.first { $0.id == item.id }
+        },
+            updateEntityWithItem: { (postEntity: PostEntity, post: Post) in
+                postEntity.id = Int32(post.id)
+                postEntity.userId = Int32(post.userId)
+                postEntity.body = post.body
+                postEntity.title = post.title
         })
     }
 }

@@ -18,53 +18,7 @@ class DatabaseHelper {
 
     static let instance = DatabaseHelper()
 
-    // MARK: - Caching
-
-    func cachePosts(_ posts: [Post]) {
-        cache(
-            items: posts,
-            entityName: Entities.post.name,
-            cachedEntityForItem: { (entities: [PostEntity], item: Post) in
-                return entities.first { $0.id == item.id }
-            },
-            updateEntityWithItem: { (postEntity: PostEntity, post: Post) in
-                postEntity.id = Int32(post.id)
-                postEntity.userId = Int32(post.userId)
-                postEntity.body = post.body
-                postEntity.title = post.title
-            })
-    }
-
-
-    func cacheUsers(_ users: [User]) {
-
-    }
-
-    func cacheComments(_ comments: [Comment]) {
-        
-    }
-
-    // MARK: - Core Data Saving support
-
-    func saveContext () {
-        if let context = backgroundContext {
-            if context.hasChanges {
-                do {
-                    try context.save()
-                } catch {
-                    debugPrint(error)
-                }
-            }
-        }
-    }
-
-    // MARK: - Private
-
-    private init() {
-        self.createPersistentContainer()
-    }
-
-    private func cache<Type, EntityType: NSManagedObject>(
+    func cache<Type, EntityType: NSManagedObject>(
         items: [Type],
         entityName: String,
         cachedEntityForItem: @escaping ([EntityType], Type) -> EntityType?,
@@ -88,6 +42,25 @@ class DatabaseHelper {
         }
     }
 
+    // MARK: - Core Data Saving support
+
+    func saveContext () {
+        if let context = backgroundContext {
+            if context.hasChanges {
+                do {
+                    try context.save()
+                } catch {
+                    debugPrint(error)
+                }
+            }
+        }
+    }
+
+    // MARK: - Private
+
+    private init() {
+        self.createPersistentContainer()
+    }
 
     private(set) var backgroundContext: NSManagedObjectContext?
 

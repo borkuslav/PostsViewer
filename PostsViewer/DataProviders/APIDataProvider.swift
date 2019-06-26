@@ -10,9 +10,9 @@ import Foundation
 import RxSwift
 
 protocol APIDataProvider {
-    func getAndCachePostsFromAPI() -> Observable<[Post]>
-    func getAndCacheUsersFromAPI() -> Observable<[User]>
-    func getAndCacheCommentsFromAPI() -> Observable<[Comment]>
+    func getPosts() -> Observable<[Post]>
+    func getUsers() -> Observable<[User]>
+    func getComments() -> Observable<[Comment]>
 }
 
 class APIDataProviderImp {
@@ -35,24 +35,15 @@ class APIDataProviderImp {
 
 extension APIDataProviderImp: APIDataProvider {
 
-    func getAndCachePostsFromAPI() -> Observable<[Post]> {
+    func getPosts() -> Observable<[Post]> {
         return get(url: URL(string: Constants.postsUrlString)!)
-            .do(afterNext: { posts in
-                DatabaseHelper.instance.cachePosts(posts)
-            })
     }
 
-    func getAndCacheUsersFromAPI() -> Observable<[User]> {
+    func getUsers() -> Observable<[User]> {
         return get(url: URL(string: Constants.usersUrlString)!)
-            .do(afterNext: { users in
-                DatabaseHelper.instance.cacheUsers(users)
-            })
     }
 
-    func getAndCacheCommentsFromAPI() -> Observable<[Comment]> {
-        return get(url: URL(string: Constants.commentsUrlString)!)
-            .do(afterNext: { comments in
-                DatabaseHelper.instance.cacheComments(comments)
-            })
+    func getComments() -> Observable<[Comment]> {
+        return get(url: URL(string: Constants.commentsUrlString)!)            
     }
 }

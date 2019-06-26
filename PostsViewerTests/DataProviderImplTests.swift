@@ -36,7 +36,7 @@ class DataProviderImplTests: XCTestCase {
             databaseDataProvider: databaseDataProvider)
     }
 
-    func test_LoadPostsFromAPI_WithSuccess_EmitPosts() {
+    func test_LoadPostsFromAPI_OnSuccess_EmitPosts() {
         let postsList: [Post] = TestDataParser().loadAndParsePosts()!
         apiDataProvider.posts = scheduler
             .createColdObservable([.next(10, postsList)])
@@ -91,6 +91,50 @@ class DataProviderImplTests: XCTestCase {
 
         XCTAssertEqual(posts.events, expected)
     }
+
+    func test_LoadPostsFromAPI_OnSuccess_CacheData() {
+
+        let cachePosts = scheduler.createObserver([Post].self)
+        databaseDataProvider.cachePosts
+            .asObservable()
+            .bind(to: cachePosts)
+            .disposed(by: disposeBag)
+
+        let postsList = TestDataParser().loadAndParsePosts()!
+        apiDataProvider.posts = scheduler
+            .createColdObservable([.next(20, postsList)])
+            .asObservable()
+
+        dataProvider.getPosts(withDatabaseFallback: true)
+            .subscribe()
+            .disposed(by: disposeBag)
+
+        scheduler.start()
+
+        XCTAssertEqual(cachePosts.events, [.next(20, postsList)])
+    }
+
+    func test_FailLoadingPostsFromAPI_DontCacheData() {
+
+        let cachePosts = scheduler.createObserver([Post].self)
+        databaseDataProvider.cachePosts
+            .asObservable()
+            .bind(to: cachePosts)
+            .disposed(by: disposeBag)
+
+        let error = NetworkError.loadingResourceFailed(404)
+        apiDataProvider.posts = scheduler
+            .createColdObservable([.error(20, error)])
+            .asObservable()
+
+        dataProvider.getPosts(withDatabaseFallback: false)
+            .subscribe()
+            .disposed(by: disposeBag)
+
+        scheduler.start()
+
+        XCTAssertEqual(cachePosts.events, [])
+    }
 }
 
 class FakeAPIDataProvider: APIDataProvider {
@@ -99,15 +143,15 @@ class FakeAPIDataProvider: APIDataProvider {
     var users: Observable<[User]>!
     var comments: Observable<[Comment]>!
 
-    func getAndCachePostsFromAPI() -> Observable<[Post]> {
+    func getPosts() -> Observable<[Post]> {
         return posts
     }
 
-    func getAndCacheUsersFromAPI() -> Observable<[User]> {
+    func getUsers() -> Observable<[User]> {
         return users
     }
 
-    func getAndCacheCommentsFromAPI() -> Observable<[Comment]> {
+    func getComments() -> Observable<[Comment]> {
         return comments
     }
 }
@@ -118,5 +162,11 @@ class FakeDatabaseDataProvider: DatabaseDataProvider {
 
     func getPosts() -> Observable<[Post]> {
         return posts
+    }
+
+    var cachePosts = PublishSubject<[Post]>()
+
+    func cachePosts(_ posts: [Post]) {
+        cachePosts.onNext(posts)
     }
 }
