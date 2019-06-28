@@ -15,12 +15,12 @@ import RxBlocking
 
 @testable import PostsViewer
 
-class DataProviderImplTests: XCTestCase {
+class DataProviderTests: XCTestCase {
 
     var scheduler: TestScheduler!
     var disposeBag: DisposeBag!
 
-    var dataProvider: DataProviderImpl!
+    var dataProvider: DataProvider!
     var apiDataProvider: FakeAPIDataProvider!
     var databaseDataProvider: FakeDatabaseDataProvider!
 
@@ -31,7 +31,7 @@ class DataProviderImplTests: XCTestCase {
         apiDataProvider = FakeAPIDataProvider()
         databaseDataProvider = FakeDatabaseDataProvider()
 
-        dataProvider = DataProviderImpl(
+        dataProvider = DataProvider(
             apiDataProvider: apiDataProvider,
             databaseDataProvider: databaseDataProvider)
     }

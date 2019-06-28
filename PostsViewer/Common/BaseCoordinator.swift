@@ -12,36 +12,40 @@
 import RxSwift
 import Foundation
 
-class BaseCoordinator<ResultType> {
-
-    typealias CoordinationResult = ResultType
+class BaseCoordinator<InputType, ResultType> {
 
     let disposeBag = DisposeBag()
 
-    func coordinate<T>(to coordinator: BaseCoordinator<T>,
-                       withTransition transitionType: TransitionType) -> Observable<T> {
+    func coordinate<InputType, ResultType>(
+        to coordinator: BaseCoordinator<InputType, ResultType>,
+        withInput input: InputType,
+        andTransition transitionType: TransitionType) -> Observable<ResultType> {
         
         store(coordinator: coordinator)
-        return coordinator.start(withTransition: transitionType)
+        return coordinator.start(withInput: input, andTransition: transitionType)
     }
 
-    func start(withTransition transitionType: TransitionType) -> Observable<ResultType> {
+    func start(
+        withInput input: InputType,
+        andTransition transitionType: TransitionType) -> Observable<ResultType> {
+
         fatalError("Start method should be implemented.")
     }
 
+    // MARK: - Private
     private let identifier = UUID()
 
     private var childCoordinators = NSHashTable<AnyObject>.weakObjects()
 
-    private func store<T>(coordinator: BaseCoordinator<T>) {
-        childCoordinators.add(CoordinatorBox<T>(item: coordinator, identifier: coordinator.identifier))
+    private func store<InputType, ResultType>(coordinator: BaseCoordinator<InputType, ResultType>) {
+        childCoordinators.add(CoordinatorBox<InputType, ResultType>(item: coordinator, identifier: coordinator.identifier))
     }
 
-    private func getChildCoordinator<T>(identifier: UUID) -> BaseCoordinator<T>? {
-        var childCoordinator: BaseCoordinator<T>?
+    private func getChildCoordinator<InputType, ResultType>(identifier: UUID) -> BaseCoordinator<InputType, ResultType>? {
+        var childCoordinator: BaseCoordinator<InputType, ResultType>?
         let enumerator = self.childCoordinators.objectEnumerator()
         while let child = enumerator.nextObject() {
-            if let box = child as? CoordinatorBox<T>, box.identifier == identifier {
+            if let box = child as? CoordinatorBox<InputType, ResultType>, box.identifier == identifier {
                 childCoordinator = box.item
             }
         }
@@ -53,14 +57,13 @@ extension BaseCoordinator: CoordinatorType {
     
 }
 
-private class CoordinatorBox<CoordinatorResult: Any> {
+private class CoordinatorBox<InputType, ResultType: Any> {
 
-    private(set) var item: BaseCoordinator<CoordinatorResult>
+    private(set) var item: BaseCoordinator<InputType, ResultType>
     private(set) var identifier: UUID
 
-    init(item: BaseCoordinator<CoordinatorResult>, identifier: UUID) {
+    init(item: BaseCoordinator<InputType, ResultType>, identifier: UUID) {
         self.item = item
         self.identifier = identifier
     }
 }
-

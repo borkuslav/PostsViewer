@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow()
 
         let rootCoordinator = RootCoordinator(window: window)
-        rootCoordinator.start(withTransition: .custom)
+        rootCoordinator.start(withInput: (), andTransition: .custom)
             .subscribe()
             .disposed(by: disposeBag)
         coordinator = rootCoordinator

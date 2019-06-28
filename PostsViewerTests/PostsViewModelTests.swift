@@ -269,7 +269,7 @@ private enum FakeError: Error {
     case error
 }
 
-private class DataProviderFake: DataProvider {
+private class DataProviderFake: DataProviderType {
 
     var posts: Observable<[Post]>!
 

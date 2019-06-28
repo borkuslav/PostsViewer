@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import RxSwift
 
-class PostsCoordinator: BaseCoordinator<Void> {
+class PostsCoordinator: BaseCoordinator<Void, Void> {
 
     private let navigationController: UINavigationController
 
@@ -18,7 +18,7 @@ class PostsCoordinator: BaseCoordinator<Void> {
         self.navigationController = navigationController
     }
 
-    override func start(withTransition transitionType: TransitionType) -> Observable<Void> {
+    override func start(withInput input: Void, andTransition transitionType: TransitionType) -> Observable<Void> {
 
         guard let viewController = PostsViewController.initFromStoryboard(name: "Posts") else {
             return Observable.never()
@@ -28,13 +28,18 @@ class PostsCoordinator: BaseCoordinator<Void> {
 
         let apiDataProvider = APIDataProviderImp()
         let databaseDataProvider = DatabaseDataProviderImpl()
-        let dataProvider = DataProviderImpl(
+        let dataProvider = DataProvider(
             apiDataProvider: apiDataProvider,
             databaseDataProvider: databaseDataProvider)
 
         let viewModel = PostsViewModel(dataProvider: dataProvider)
         viewController.viewModel = viewModel
-        navigationController.pushViewController(viewController, animated: false)
+        switch transitionType {
+        case .push(let animated):
+            navigationController.pushViewController(viewController, animated: animated)
+        default:
+            break;
+        }
 
         viewModel.selectedPost
             .asObservable()
@@ -51,7 +56,8 @@ class PostsCoordinator: BaseCoordinator<Void> {
 
     private func pushPostDetails(post: Post) -> Observable<Void> {
         return coordinate(
-            to: PostsDetailsCoordinator(navigationController: navigationController),
-            withTransition: .push(animated: true))
+            to: PostDetailsCoordinator(navigationController: navigationController),
+            withInput: post,
+            andTransition: .push(animated: true))
     }
 }

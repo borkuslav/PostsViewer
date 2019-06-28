@@ -9,11 +9,16 @@
 import Foundation
 import RxSwift
 
-protocol DataProvider {
+protocol PostsProvider {
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]>
 }
 
-final class DataProviderImpl {
+
+protocol DataProviderType: PostsProvider {
+
+}
+
+final class DataProvider {
 
     private var apiDataProvider: APIDataProvider
     private var databaseDataProvider: DatabaseDataProvider
@@ -49,7 +54,7 @@ final class DataProviderImpl {
     }
 }
 
-extension DataProviderImpl: DataProvider {
+extension DataProvider: DataProviderType {
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
         return get(apiFetch: apiDataProvider.getPosts,
                    cachingFunction: databaseDataProvider.cachePosts,

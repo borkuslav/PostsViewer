@@ -62,9 +62,9 @@ class PostsViewModel: PostsViewModelType {
 
     // MARK: -
     private let disposeBag = DisposeBag()
-    private let dataProvider: DataProvider
+    private let dataProvider: DataProviderType
 
-    init(dataProvider: DataProvider) {
+    init(dataProvider: DataProviderType) {
         self.dataProvider = dataProvider
 
         let refreshPosts = PublishSubject<Void>()

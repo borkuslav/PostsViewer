@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-class RootCoordinator: BaseCoordinator<Void> {
+class RootCoordinator: BaseCoordinator<Void, Void> {
 
     private let window: UIWindow
 
@@ -17,14 +17,14 @@ class RootCoordinator: BaseCoordinator<Void> {
         self.window = window
     }
 
-    override func start(withTransition transitionType: TransitionType) -> Observable<Void> {
+    override func start(withInput input: Void, andTransition transitionType: TransitionType) -> Observable<Void> {
 
         let navigationController = UINavigationController()
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
 
         let postsCoordinator = PostsCoordinator(navigationController: navigationController)
-        return coordinate(to: postsCoordinator, withTransition: .push(animated: false))
+        return coordinate(to: postsCoordinator, withInput: (), andTransition: .push(animated: false))
     }
 
 }
