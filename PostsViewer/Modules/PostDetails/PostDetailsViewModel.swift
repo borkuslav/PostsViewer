@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 protocol PostDetailsViewModelInput {
 
@@ -15,7 +16,7 @@ protocol PostDetailsViewModelInput {
 
 protocol PostDetailsViewModelOutput {
 
-    var postDetails: Observable<PostDetails> { get }
+    var postDetails: Driver<[PostSectionViewModelType]> { get }
 }
 
 protocol PostDetailsViewModelType: PostDetailsViewModelInput, PostDetailsViewModelOutput {
@@ -31,7 +32,7 @@ class PostDetailsViewModel: PostDetailsViewModelType {
 
     // MARK: - Outputs
 
-    var postDetails: Observable<PostDetails>
+    var postDetails: Driver<[PostSectionViewModelType]>
 
     // MARK: -
 
@@ -41,8 +42,20 @@ class PostDetailsViewModel: PostDetailsViewModelType {
         let _showPostsDetails = PublishSubject<Post>()
         self.showPostsDetails = _showPostsDetails.asObserver()
 
-        let _postDetails = ReplaySubject<PostDetails>.create(bufferSize: 1)
-        self.postDetails = _postDetails.asObservable()
+        let _postDetails = _showPostsDetails.asObservable()
+            .flatMap { post in
+                return postsDetailsProvider.getPostDetails(forPost: post)
+                    .materialize()
+            }.share()
+
+        self.postDetails = _postDetails.elements()
+            .flatMap({ postDetails -> Observable<[PostSectionViewModelType]>in
+                return .just([
+                    .author(PostAuthorViewModel(user: postDetails.user)),
+                    .title(PostContentViewModel(post: postDetails.post)),
+                    .comments(PostCommentsViewModel(comments: postDetails.comments))
+                ])
+            }).asDriver(onErrorDriveWith: .never())
     }
 
     private let postsDetailsProvider: PostsDetailsProvider

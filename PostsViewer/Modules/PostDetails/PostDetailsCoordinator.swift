@@ -26,7 +26,19 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
         let viewController = PostsDetailsViewController()
         viewController.coordinator = self
 
+
+        let apiDataProvider = APIDataProviderImp()
+        let databaseDataProvider = DatabaseDataProviderImpl()
+        let dataProvider = DataProvider(
+            apiDataProvider: apiDataProvider,
+            databaseDataProvider: databaseDataProvider)
+
+        let postDetailsViewModel = PostDetailsViewModel(postsDetailsProvider: dataProvider)
+        // TODO: bind show other posts of that autor        
+
         navigationController.pushViewController(viewController, animated: true)
+
+        postDetailsViewModel.showPostsDetails.onNext(input)
 
         return .never()
     }
