@@ -20,14 +20,31 @@ protocol PostDetailsViewModelOutput {
 
 protocol PostDetailsViewModelType: PostDetailsViewModelInput, PostDetailsViewModelOutput {
 
+    var showPostsDetails: AnyObserver<Post> { get }
 }
 
 class PostDetailsViewModel: PostDetailsViewModelType {
 
+    // MARK: - Inputs
+
+    var showPostsDetails: AnyObserver<Post>
+
+    // MARK: - Outputs
+
     var postDetails: Observable<PostDetails>
 
-    init() {
-        let postDetails = ReplaySubject<PostDetails>.create(bufferSize: 1)
-        self.postDetails = postDetails.asObservable()
+    // MARK: -
+
+    init(postsDetailsProvider: PostsDetailsProvider) {
+        self.postsDetailsProvider = postsDetailsProvider
+
+        let _showPostsDetails = PublishSubject<Post>()
+        self.showPostsDetails = _showPostsDetails.asObserver()
+
+        let _postDetails = ReplaySubject<PostDetails>.create(bufferSize: 1)
+        self.postDetails = _postDetails.asObservable()
     }
+
+    private let postsDetailsProvider: PostsDetailsProvider
+
 }

@@ -67,13 +67,15 @@ class PostsViewModel: PostsViewModelType {
     init(postsProvider: PostsProvider) {
         self.postsProvider = postsProvider
 
-        let refreshPosts = PublishSubject<Void>()
+        let _viewDidLoad = PublishSubject<Void>()
+        self.viewDidLoad = _viewDidLoad.asObserver()
 
-        let viewDidLoad = PublishSubject<Void>()
+        let _refreshPosts = PublishSubject<Void>()
+        self.refreshPosts = _refreshPosts.asObserver()
 
-        let posts = Observable.merge(
-            viewDidLoad.asObservable().map { _ -> Bool in true },
-            refreshPosts.asObservable().map { _ -> Bool in false }
+        let _posts = Observable.merge(
+            _viewDidLoad.asObservable().map { _ -> Bool in true },
+            _refreshPosts.asObservable().map { _ -> Bool in false }
         ).flatMap({ withDatabaseFallback in
             return postsProvider
                 .getPosts(withDatabaseFallback: withDatabaseFallback)
@@ -81,34 +83,31 @@ class PostsViewModel: PostsViewModelType {
         }).share()
 
         self.errorText = Observable<String>.merge(
-            posts.errors().map {
+            _posts.errors().map {
                 return $0.localizedDescription + "\nPull down to refresh"                
             },
-            posts.elements().map { _ in "" },
-            refreshPosts.map { _ in "" }
+            _posts.elements().map { _ in "" },
+            _refreshPosts.map { _ in "" }
         ).asDriver(onErrorDriveWith: .never())
 
-        self.hideRefreshIndicator = posts
+        self.hideRefreshIndicator = _posts
             .map { _ in () }
             .asDriver(onErrorDriveWith: .never())
 
         self.loadingViewVisible = Observable<Bool>.merge(
-            viewDidLoad.asObservable().map { _ in true },
-            posts.elements().map { _ in false },
-            posts.errors().map { _ in false }
+            _viewDidLoad.asObservable().map { _ in true },
+            _posts.elements().map { _ in false },
+            _posts.errors().map { _ in false }
         ).asDriver(onErrorDriveWith: .never())
 
         self.posts = Observable<[Post]>.merge(
-            posts.elements(),
-            posts.errors().flatMap { _ -> Observable<[Post]> in .just([]) }
+            _posts.elements(),
+            _posts.errors().flatMap { _ -> Observable<[Post]> in .just([]) }
         ).asDriver(onErrorJustReturn: [])
 
-        self.viewDidLoad = viewDidLoad.asObserver()
-        self.refreshPosts = refreshPosts.asObserver()
-
-        let selectingPosts = PublishSubject<Post>()
-        self.selectPost = selectingPosts.asObserver()
-        self.selectedPost = selectingPosts.asDriver(onErrorDriveWith: .never())
+        let _selectPost = PublishSubject<Post>()
+        self.selectPost = _selectPost.asObserver()
+        self.selectedPost = _selectPost.asDriver(onErrorDriveWith: .never())
     }
 
     deinit {

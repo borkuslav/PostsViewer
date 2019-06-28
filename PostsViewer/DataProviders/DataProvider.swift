@@ -13,8 +13,11 @@ protocol PostsProvider {
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]>
 }
 
+protocol PostsDetailsProvider {
+    func getPostDetails(forPost post: Post) -> Observable<PostDetails>
+}
 
-protocol DataProviderType: PostsProvider {
+protocol DataProviderType: PostsProvider, PostsDetailsProvider {
 
 }
 
@@ -55,10 +58,16 @@ final class DataProvider {
 }
 
 extension DataProvider: DataProviderType {
+
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
-        return get(apiFetch: apiDataProvider.getPosts,
-                   cachingFunction: databaseDataProvider.cachePosts,
-                   withDatabaseFallback: withDatabaseFallback,
-                   databaseFetch: databaseDataProvider.getPosts)
+        return get(
+            apiFetch: apiDataProvider.getPosts,
+            cachingFunction: databaseDataProvider.cachePosts,
+            withDatabaseFallback: withDatabaseFallback,
+            databaseFetch: databaseDataProvider.getPosts)
+    }
+
+    func getPostDetails(forPost post: Post) -> Observable<PostDetails> {
+        return .never()
     }
 }
