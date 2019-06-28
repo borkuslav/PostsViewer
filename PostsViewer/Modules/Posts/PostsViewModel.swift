@@ -62,10 +62,10 @@ class PostsViewModel: PostsViewModelType {
 
     // MARK: -
     private let disposeBag = DisposeBag()
-    private let dataProvider: DataProviderType
+    private let postsProvider: PostsProvider
 
-    init(dataProvider: DataProviderType) {
-        self.dataProvider = dataProvider
+    init(postsProvider: PostsProvider) {
+        self.postsProvider = postsProvider
 
         let refreshPosts = PublishSubject<Void>()
 
@@ -75,7 +75,7 @@ class PostsViewModel: PostsViewModelType {
             viewDidLoad.asObservable().map { _ -> Bool in true },
             refreshPosts.asObservable().map { _ -> Bool in false }
         ).flatMap({ withDatabaseFallback in
-            return dataProvider
+            return postsProvider
                 .getPosts(withDatabaseFallback: withDatabaseFallback)
                 .materialize()
         }).share()

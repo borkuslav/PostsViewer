@@ -32,13 +32,13 @@ class PostsCoordinator: BaseCoordinator<Void, Void> {
             apiDataProvider: apiDataProvider,
             databaseDataProvider: databaseDataProvider)
 
-        let viewModel = PostsViewModel(dataProvider: dataProvider)
+        let viewModel = PostsViewModel(postsProvider: dataProvider)
         viewController.viewModel = viewModel
         switch transitionType {
         case .push(let animated):
             navigationController.pushViewController(viewController, animated: animated)
         default:
-            break;
+            break
         }
 
         viewModel.selectedPost

@@ -36,6 +36,11 @@
 		A975FBAE22BE75DF00CB79D5 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBAD22BE75DF00CB79D5 /* Comment.swift */; };
 		A975FBB322BEA61300CB79D5 /* Storyboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = A975FBB222BEA61300CB79D5 /* Storyboarded.swift */; };
 		A9E4EB9F22C6934600A2F489 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EB9E22C6934500A2F489 /* DataProvider.swift */; };
+		A9E4EBA122C695DA00A2F489 /* PostDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBA022C695DA00A2F489 /* PostDetails.swift */; };
+		A9E4EBA622C695E700A2F489 /* PostDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBA322C695E700A2F489 /* PostDetailsViewModel.swift */; };
+		A9E4EBA722C695E700A2F489 /* PostDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBA422C695E700A2F489 /* PostDetailsCoordinator.swift */; };
+		A9E4EBA822C695E700A2F489 /* PostDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBA522C695E700A2F489 /* PostDetailsViewController.swift */; };
+		A9E4EBAA22C695FC00A2F489 /* PostDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBA922C695FC00A2F489 /* PostDetailsViewModelTests.swift */; };
 		E4791E8409EF0880E3FC0E53 /* Pods_PostsViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +92,11 @@
 		A975FBB222BEA61300CB79D5 /* Storyboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboarded.swift; sourceTree = "<group>"; };
 		A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9E4EB9E22C6934500A2F489 /* DataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
+		A9E4EBA022C695DA00A2F489 /* PostDetails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetails.swift; sourceTree = "<group>"; };
+		A9E4EBA322C695E700A2F489 /* PostDetailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailsViewModel.swift; sourceTree = "<group>"; };
+		A9E4EBA422C695E700A2F489 /* PostDetailsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailsCoordinator.swift; sourceTree = "<group>"; };
+		A9E4EBA522C695E700A2F489 /* PostDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailsViewController.swift; sourceTree = "<group>"; };
+		A9E4EBA922C695FC00A2F489 /* PostDetailsViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		D60C27510B63546D40CFBCEB /* Pods-PostsViewerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewerTests.release.xcconfig"; path = "Target Support Files/Pods-PostsViewerTests/Pods-PostsViewerTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -182,6 +192,7 @@
 				A96F48C622BE1ADC00A73CBE /* Info.plist */,
 				A93E43C122C162E70090EE1A /* TestData */,
 				A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */,
+				A9E4EBA922C695FC00A2F489 /* PostDetailsViewModelTests.swift */,
 				A93E43C422C2B0A70090EE1A /* DataProviderTests.swift */,
 			);
 			path = PostsViewerTests;
@@ -192,6 +203,7 @@
 			children = (
 				A975FB9222BE20AE00CB79D5 /* Root */,
 				A975FB8B22BE207400CB79D5 /* Posts */,
+				A9E4EBA222C695E700A2F489 /* PostDetails */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -248,11 +260,22 @@
 		A975FBA822BE75BA00CB79D5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A9E4EBA022C695DA00A2F489 /* PostDetails.swift */,
 				A975FBA922BE75C900CB79D5 /* Post.swift */,
 				A975FBAB22BE75D200CB79D5 /* User.swift */,
 				A975FBAD22BE75DF00CB79D5 /* Comment.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		A9E4EBA222C695E700A2F489 /* PostDetails */ = {
+			isa = PBXGroup;
+			children = (
+				A9E4EBA322C695E700A2F489 /* PostDetailsViewModel.swift */,
+				A9E4EBA422C695E700A2F489 /* PostDetailsCoordinator.swift */,
+				A9E4EBA522C695E700A2F489 /* PostDetailsViewController.swift */,
+			);
+			path = PostDetails;
 			sourceTree = "<group>";
 		};
 		B3AEB89E70F3FD277AC664B3 /* Pods */ = {
@@ -492,17 +515,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9E4EBA122C695DA00A2F489 /* PostDetails.swift in Sources */,
 				A975FB8F22BE209B00CB79D5 /* PostsViewModel.swift in Sources */,
 				A93E43B722C14E070090EE1A /* Constants.swift in Sources */,
 				A93E43BB22C1512E0090EE1A /* DatabaseDataProvider.swift in Sources */,
+				A9E4EBA622C695E700A2F489 /* PostDetailsViewModel.swift in Sources */,
 				A975FBAA22BE75C900CB79D5 /* Post.swift in Sources */,
 				A975FB9122BE20AA00CB79D5 /* PostsCoordinator.swift in Sources */,
+				A9E4EBA722C695E700A2F489 /* PostDetailsCoordinator.swift in Sources */,
 				A975FB8D22BE208D00CB79D5 /* PostsViewController.swift in Sources */,
 				A93E43B522C14DDE0090EE1A /* Errors.swift in Sources */,
 				A96F48B522BE1ADA00A73CBE /* PostsViewer.xcdatamodeld in Sources */,
 				A93E43CE22C417F10090EE1A /* TransitionType.swift in Sources */,
 				A975FB9B22BE2E0C00CB79D5 /* DatabaseHelper.swift in Sources */,
 				A975FB9622BE210100CB79D5 /* BaseCoordinator.swift in Sources */,
+				A9E4EBA822C695E700A2F489 /* PostDetailsViewController.swift in Sources */,
 				A9E4EB9F22C6934600A2F489 /* DataProvider.swift in Sources */,
 				A975FBAE22BE75DF00CB79D5 /* Comment.swift in Sources */,
 				A975FBAC22BE75D200CB79D5 /* User.swift in Sources */,
@@ -521,6 +548,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A93E43C522C2B0A70090EE1A /* DataProviderTests.swift in Sources */,
+				A9E4EBAA22C695FC00A2F489 /* PostDetailsViewModelTests.swift in Sources */,
 				A93E43C322C1632E0090EE1A /* TestDataParser.swift in Sources */,
 				A93E43B322C14D390090EE1A /* PostsViewModelTests.swift in Sources */,
 			);

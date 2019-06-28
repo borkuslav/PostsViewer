@@ -32,14 +32,14 @@ class PostsViewModelTests: XCTestCase {
     var disposeBag: DisposeBag!
 
     var viewModel: PostsViewModel!
-    private var dataProvider: DataProviderFake!
+    private var postsProvider: PostsProviderFake!
 
     override func setUp() {
         scheduler = TestScheduler(initialClock: 0)
         disposeBag = DisposeBag()
 
-        dataProvider = DataProviderFake()
-        viewModel = PostsViewModel(dataProvider: dataProvider)
+        postsProvider = PostsProviderFake()
+        viewModel = PostsViewModel(postsProvider: postsProvider)
     }
 
     func test_RefreshPosts_OnPostsLoaded_EmitsPosts() {
@@ -209,7 +209,7 @@ class PostsViewModelTests: XCTestCase {
         _ = createPostsTestableObserver(forPosts: postsList)
 
         let withDatabaseFallback = scheduler.createObserver(Bool.self)
-        dataProvider.withDatabaseFallback.asObservable()
+        postsProvider.withDatabaseFallback.asObservable()
             .bind(to: withDatabaseFallback)
             .disposed(by: disposeBag)
 
@@ -238,14 +238,14 @@ class PostsViewModelTests: XCTestCase {
 
     private func prepareDataProviderToSuccess(emitPostsAtTestTime testTime: TestTime) -> [Post] {
         let postsList: [Post] = TestDataParser().loadAndParsePosts()!
-        dataProvider.posts = scheduler
+        postsProvider.posts = scheduler
             .createColdObservable([.next(testTime, postsList)])
             .asObservable()
         return postsList
     }
 
     private func prepareDataProviderToFailure(emitPostsAtTestTime testTime: TestTime, error: Error) {
-        dataProvider.posts = scheduler
+        postsProvider.posts = scheduler
             .createColdObservable([.error(testTime, error)])
             .asObservable()
     }
@@ -269,7 +269,7 @@ private enum FakeError: Error {
     case error
 }
 
-private class DataProviderFake: DataProviderType {
+private class PostsProviderFake: PostsProvider {
 
     var posts: Observable<[Post]>!
 

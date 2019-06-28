@@ -9,7 +9,7 @@
 import UIKit
 import RxSwift
 
-class PostsDetailsCoordinator: BaseCoordinator<Void> {
+class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
 
     private let navigationController: UINavigationController
 
@@ -21,8 +21,8 @@ class PostsDetailsCoordinator: BaseCoordinator<Void> {
         self.navigationController = navigationController
     }
 
-    override func start(withTransition transitionType: TransitionType) -> Observable<Void> {
-
+    override func start(withInput input: Post, andTransition transitionType: TransitionType) -> Observable<Void> {
+        
         let viewController = PostsDetailsViewController()
         viewController.coordinator = self
 
