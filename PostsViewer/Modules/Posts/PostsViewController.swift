@@ -76,5 +76,10 @@ class PostsViewController: UIViewController, Storyboarded {
             .asDriver()
             .drive(viewModel.selectPost)
             .disposed(by: disposeBag)
+
+        tableView.rx.itemSelected
+            .subscribe(onNext: { [tableView] indexPath in
+                tableView?.deselectRow(at: indexPath, animated: true)
+            }).disposed(by: disposeBag)
     }
 }

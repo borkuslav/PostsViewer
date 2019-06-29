@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="postSectionAuthor" rowHeight="87" id="OBj-rH-DWF" customClass="PostSectionAuthorCell" customModule="PostsViewer" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="421" height="87"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="OBj-rH-DWF" id="xKT-gK-a1w">
+                <rect key="frame" x="0.0" y="0.0" width="421" height="86.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CFk-d3-hdc">
+                        <rect key="frame" x="16" y="16" width="89.5" height="24"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(name)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2TZ-9F-DVc">
+                        <rect key="frame" x="107.5" y="20.5" width="49" height="18"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iTt-bE-KKg">
+                        <rect key="frame" x="16" y="40" width="109" height="38.5"/>
+                        <state key="normal" title="See other posts"/>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="iTt-bE-KKg" secondAttribute="bottom" constant="8" id="MdS-0N-VYR"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2TZ-9F-DVc" secondAttribute="trailing" constant="16" id="N54-ru-06G"/>
+                    <constraint firstItem="iTt-bE-KKg" firstAttribute="top" secondItem="CFk-d3-hdc" secondAttribute="bottom" id="YYI-JB-HKC"/>
+                    <constraint firstItem="CFk-d3-hdc" firstAttribute="top" secondItem="xKT-gK-a1w" secondAttribute="top" constant="16" id="enr-Og-Ld5"/>
+                    <constraint firstItem="2TZ-9F-DVc" firstAttribute="leading" secondItem="CFk-d3-hdc" secondAttribute="trailing" constant="2" id="oaZ-DT-CWp"/>
+                    <constraint firstItem="2TZ-9F-DVc" firstAttribute="firstBaseline" secondItem="CFk-d3-hdc" secondAttribute="firstBaseline" id="veq-9O-o06"/>
+                    <constraint firstItem="CFk-d3-hdc" firstAttribute="leading" secondItem="xKT-gK-a1w" secondAttribute="leading" constant="16" id="wxI-DN-UVw"/>
+                    <constraint firstItem="iTt-bE-KKg" firstAttribute="leading" secondItem="CFk-d3-hdc" secondAttribute="leading" id="yCq-2j-k0P"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="name" destination="2TZ-9F-DVc" id="Ams-aK-6Nq"/>
+                <outlet property="seeOtherPosts" destination="iTt-bE-KKg" id="jdx-Xp-yKt"/>
+                <outlet property="username" destination="CFk-d3-hdc" id="qvh-Cg-NhK"/>
+            </connections>
+            <point key="canvasLocation" x="-60.14492753623189" y="89.397321428571431"/>
+        </tableViewCell>
+    </objects>
+</document>

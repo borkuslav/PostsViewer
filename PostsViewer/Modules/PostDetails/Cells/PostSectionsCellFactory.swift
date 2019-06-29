@@ -9,9 +9,9 @@
 import UIKit
 
 enum PostSectionCellReuseIdentifier: String {
-    case authorCellReuseIdentifier
-    case contentCellReuseIdentifier
-    case commentsCellReuseIdentifier
+    case postSectionAuthor
+    case postSectionContent
+    case postSectionComments
 }
 
 class PostSectionsCellFactory {
@@ -20,16 +20,26 @@ class PostSectionsCellFactory {
         inTableView tableView: UITableView,
         forViewModelType viewModelType: PostSectionViewModelType) -> UITableViewCell {
 
+        var cell: UITableViewCell?
         switch  viewModelType {
-        case .content(let contentViewModel):
-            return UITableViewCell()
         case .author(let authorViewModel):
-            return UITableViewCell()
+            let ident = PostSectionCellReuseIdentifier.postSectionAuthor.rawValue
+            let authorCell = tableView.dequeueReusableCell(withIdentifier: ident) as? PostSectionAuthorCell
+            authorCell?.setup(viewModel: authorViewModel)
+            cell = authorCell
+        case .content(let contentViewModel):
+            let ident = PostSectionCellReuseIdentifier.postSectionContent.rawValue
+            let contentCell = tableView.dequeueReusableCell(withIdentifier: ident) as? PostSectionContentCell
+            contentCell?.setup(viewModel: contentViewModel)
+            cell = contentCell
         case .comments(let commentsViewModel):
-            return UITableViewCell()
-        default:
-            return UITableViewCell()
+            let ident = PostSectionCellReuseIdentifier.postSectionComments.rawValue
+            let commentsCell = tableView.dequeueReusableCell(withIdentifier: ident) as? PostSectionCommentsCell
+            commentsCell?.setup(viewModel: commentsViewModel)
+            cell = commentsCell
         }
+        cell?.selectionStyle = .none
+        return cell ?? UITableViewCell()
     }
 
 }

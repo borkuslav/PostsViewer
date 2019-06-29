@@ -12,7 +12,9 @@ import UIKit
 
 class PostSectionCommentsCell: UITableViewCell {
 
-    func setup(viewModel: PostCommentsViewModel) {
+    @IBOutlet weak var comments: UILabel!
 
+    func setup(viewModel: PostCommentsViewModel) {
+        comments.text = "\(viewModel.comments.count) comments"
     }
 }

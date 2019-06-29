@@ -10,6 +10,9 @@
 		047DC7F909696CED3C31F8F3 /* Pods_PostsViewerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F315CF5E534B807886BCEC /* Pods_PostsViewerTests.framework */; };
 		A92A64A022C76EB9009972D7 /* Comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A9E4EBD122C763A500A2F489 /* Comments.json */; };
 		A92A64A222C7AE51009972D7 /* PostSectionsCellFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A64A122C7AE51009972D7 /* PostSectionsCellFactory.swift */; };
+		A92A64A522C7AF34009972D7 /* PostSectionAuthorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A92A64A322C7AF34009972D7 /* PostSectionAuthorCell.xib */; };
+		A92A64A822C7AF4C009972D7 /* PostSectionContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A92A64A622C7AF4C009972D7 /* PostSectionContentCell.xib */; };
+		A92A64AB22C7AF64009972D7 /* PostSectionCommentsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A92A64A922C7AF64009972D7 /* PostSectionCommentsCell.xib */; };
 		A93E43B122BFF9BD0090EE1A /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B022BFF9BD0090EE1A /* Identifiable.swift */; };
 		A93E43B322C14D390090EE1A /* PostsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */; };
 		A93E43B522C14DDE0090EE1A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B422C14DDE0090EE1A /* Errors.swift */; };
@@ -72,6 +75,9 @@
 		50F315CF5E534B807886BCEC /* Pods_PostsViewerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsViewerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		932CD8AA20E41BE052BAE2E1 /* Pods-PostsViewer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewer.debug.xcconfig"; path = "Target Support Files/Pods-PostsViewer/Pods-PostsViewer.debug.xcconfig"; sourceTree = "<group>"; };
 		A92A64A122C7AE51009972D7 /* PostSectionsCellFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostSectionsCellFactory.swift; sourceTree = "<group>"; };
+		A92A64A422C7AF34009972D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = PostsViewer/Base.lproj/PostSectionAuthorCell.xib; sourceTree = SOURCE_ROOT; };
+		A92A64A722C7AF4C009972D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = PostsViewer/Base.lproj/PostSectionContentCell.xib; sourceTree = SOURCE_ROOT; };
+		A92A64AA22C7AF64009972D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = PostsViewer/Base.lproj/PostSectionCommentsCell.xib; sourceTree = SOURCE_ROOT; };
 		A93E43B022BFF9BD0090EE1A /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModelTests.swift; sourceTree = "<group>"; };
 		A93E43B422C14DDE0090EE1A /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -311,8 +317,11 @@
 			children = (
 				A92A64A122C7AE51009972D7 /* PostSectionsCellFactory.swift */,
 				A9E4EBBE22C6B1FE00A2F489 /* PostSectionAuthorCell.swift */,
+				A92A64A322C7AF34009972D7 /* PostSectionAuthorCell.xib */,
 				A9E4EBBC22C6B1E800A2F489 /* PostSectionContentCell.swift */,
+				A92A64A622C7AF4C009972D7 /* PostSectionContentCell.xib */,
 				A9E4EBC022C6B21900A2F489 /* PostSectionCommentsCell.swift */,
+				A92A64A922C7AF64009972D7 /* PostSectionCommentsCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -425,8 +434,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A92A64A522C7AF34009972D7 /* PostSectionAuthorCell.xib in Resources */,
+				A92A64AB22C7AF64009972D7 /* PostSectionCommentsCell.xib in Resources */,
 				A975FBA022BE460900CB79D5 /* Posts.storyboard in Resources */,
 				A9E4EBBA22C6A77400A2F489 /* PostDetails.storyboard in Resources */,
+				A92A64A822C7AF4C009972D7 /* PostSectionContentCell.xib in Resources */,
 				A96F48BA22BE1ADB00A73CBE /* LaunchScreen.storyboard in Resources */,
 				A96F48B722BE1ADB00A73CBE /* Assets.xcassets in Resources */,
 			);
@@ -627,6 +639,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		A92A64A322C7AF34009972D7 /* PostSectionAuthorCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A92A64A422C7AF34009972D7 /* Base */,
+			);
+			name = PostSectionAuthorCell.xib;
+			sourceTree = "<group>";
+		};
+		A92A64A622C7AF4C009972D7 /* PostSectionContentCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A92A64A722C7AF4C009972D7 /* Base */,
+			);
+			name = PostSectionContentCell.xib;
+			sourceTree = "<group>";
+		};
+		A92A64A922C7AF64009972D7 /* PostSectionCommentsCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A92A64AA22C7AF64009972D7 /* Base */,
+			);
+			name = PostSectionCommentsCell.xib;
+			sourceTree = "<group>";
+		};
 		A96F48B822BE1ADB00A73CBE /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

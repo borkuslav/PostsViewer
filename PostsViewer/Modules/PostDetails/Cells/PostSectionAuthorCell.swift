@@ -12,7 +12,12 @@ import UIKit
 
 class PostSectionAuthorCell: UITableViewCell {
 
-    func setup(viewModel: PostAuthorViewModel) {
+    @IBOutlet weak var username: UILabel!
+    @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var seeOtherPosts: UIButton!
 
+    func setup(viewModel: PostAuthorViewModel) {
+        username.text = viewModel.user.username
+        name.text = "(\(viewModel.user.name))"
     }
 }

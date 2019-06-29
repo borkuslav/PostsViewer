@@ -27,9 +27,19 @@ class PostDetailsViewController: UIViewController, Storyboarded {
     }
 
     private func setupUI() {
-        title = "Post details"
+        title = ""
         view.backgroundColor = .white
-        //tableView.register
+        tableView.tableFooterView = UIView()
+        
+        tableView.register(
+            UINib(nibName: "PostSectionAuthorCell", bundle: .main),
+            forCellReuseIdentifier: PostSectionCellReuseIdentifier.postSectionAuthor.rawValue)
+        tableView.register(
+            UINib(nibName: "PostSectionContentCell", bundle: .main),
+            forCellReuseIdentifier: PostSectionCellReuseIdentifier.postSectionContent.rawValue)
+        tableView.register(
+            UINib(nibName: "PostSectionCommentsCell", bundle: .main),
+            forCellReuseIdentifier: PostSectionCellReuseIdentifier.postSectionComments.rawValue)
     }
 
     private func setupBindings() {
