@@ -45,15 +45,6 @@ class DataProviderTests: XCTestCase {
         runTestAndCheckGetPostResults(withFallback: true, expected: [.next(10, postsList)])
     }
 
-    func test_FailLoadingPostsFromAPI_WithoutDatabaseFallback_EmitError() {
-        let error = NetworkError.operationFailedPleaseRetry
-        apiDataProvider.posts = scheduler
-            .createColdObservable([.error(10, error)])
-            .asObservable()
-
-        runTestAndCheckGetPostResults(withFallback: false, expected: [.error(10, error)])
-    }
-
     func test_FailLoadingPostsFromAPI_WithDatabaseFallback_WhenNoCachedPosts_EmitError() {
         let error = NetworkError.operationFailedPleaseRetry
         apiDataProvider.posts = scheduler
@@ -116,6 +107,10 @@ class DataProviderTests: XCTestCase {
 
     func test_FailLoadingPostsFromAPI_DontCacheData() {
 
+        databaseDataProvider.posts = scheduler
+            .createColdObservable([.next(0, [])])
+            .asObservable()
+
         let cachePosts = scheduler.createObserver([Post].self)
         databaseDataProvider.cachePosts
             .asObservable()
@@ -140,18 +135,17 @@ class DataProviderTests: XCTestCase {
 class FakeAPIDataProvider: APIDataProviderType {
 
     var posts: Observable<[Post]>!
-    var users: Observable<[User]>!
-    var comments: Observable<[Comment]>!
-
     func getPosts() -> Observable<[Post]> {
         return posts
     }
 
-    func getUsers() -> Observable<[User]> {
-        return users
+    var user: Observable<User>!
+    func getUser(forUserId userId: Int) -> Observable<User> {
+        return user
     }
 
-    func getComments() -> Observable<[Comment]> {
+    var comments: Observable<[Comment]>!
+    func getComments(forPostId postId: Int) -> Observable<[Comment]> {
         return comments
     }
 }
@@ -159,14 +153,32 @@ class FakeAPIDataProvider: APIDataProviderType {
 class FakeDatabaseDataProvider: DatabaseDataProvider {
 
     var posts: Observable<[Post]>!
-
     func getPosts() -> Observable<[Post]> {
         return posts
     }
 
     var cachePosts = PublishSubject<[Post]>()
-
     func cachePosts(_ posts: [Post]) {
         cachePosts.onNext(posts)
+    }
+
+    var user: Observable<User?>!
+    func getUser(forUserId userId: Int) -> Observable<User?> {
+        return user
+    }
+
+    var cacheUser = PublishSubject<User>()
+    func cacheUser(_ user: User) {
+        cacheUser.onNext(user)
+    }
+
+    var comments: Observable<[Comment]>!
+    func getComments(forPostId postId: Int) -> Observable<[Comment]> {
+        return comments
+    }
+
+    var cacheComments = PublishSubject<[Comment]>()
+    func cacheComments(_ comments: [Comment]) {
+        cacheComments.onNext(comments)
     }
 }

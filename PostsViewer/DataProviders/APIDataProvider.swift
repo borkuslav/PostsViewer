@@ -11,13 +11,13 @@ import RxSwift
 
 protocol APIDataProviderType {
     func getPosts() -> Observable<[Post]>
-    func getUsers() -> Observable<[User]>
-    func getComments() -> Observable<[Comment]>
+    func getUser(forUserId userId: Int) -> Observable<User>
+    func getComments(forPostId postId: Int) -> Observable<[Comment]>
 }
 
 final class APIDataProviderImp {
 
-    private func get<Model: Decodable>(url: URL) -> Observable<[Model]> {
+    private func getList<Model: Decodable>(url: URL) -> Observable<[Model]> {
         let urlRequest = URLRequest(url: url)
         return URLSession.shared.rx
             .response(request: urlRequest)
@@ -31,19 +31,29 @@ final class APIDataProviderImp {
                 return .error(NetworkError.loadingResourceFailed(response.statusCode))
             }            
     }
+
+    private func getSingle<Model: Decodable>(url: URL) -> Observable<Model> {
+        let list: Observable<[Model]> = getList(url: url)
+        return list.flatMap { list -> Observable<Model> in
+            if let result = list.first {
+                return .just(result)
+            }
+            return .error(NetworkError.parsingResourceFailed) // TODO: 
+        }
+    }
 }
 
 extension APIDataProviderImp: APIDataProviderType {
 
     func getPosts() -> Observable<[Post]> {
-        return get(url: URL(string: Constants.postsUrlString)!)
+        return getList(url: URL(string: Constants.postsUrlString)!)
     }
 
-    func getUsers() -> Observable<[User]> {
-        return get(url: URL(string: Constants.usersUrlString)!)
+    func getUser(forUserId userId: Int) -> Observable<User> {
+        return getSingle(url: URL(string: "\(Constants.usersUrlString)?id=\(userId)")!)
     }
 
-    func getComments() -> Observable<[Comment]> {
-        return get(url: URL(string: Constants.commentsUrlString)!)            
+    func getComments(forPostId postId: Int) -> Observable<[Comment]> {
+        return getList(url: URL(string: "\(Constants.commentsUrlString)?postId=\(postId)")!)
     }
 }

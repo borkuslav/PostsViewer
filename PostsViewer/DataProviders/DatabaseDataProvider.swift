@@ -20,14 +20,14 @@ enum Entities: String {
     }
 }
 
-protocol DatabaseDataProvider {
+protocol DatabaseDataProvider: class {
     func getPosts() -> Observable<[Post]>
     func cachePosts(_ posts: [Post])
 
-    func getUsers() -> Observable<[User]>
-    func cacheUsers(_ users: [User])
+    func getUser(forUserId userId: Int) -> Observable<User?>
+    func cacheUser(_ user: User)
 
-    func getComments() -> Observable<[Comment]>
+    func getComments(forPostId postId: Int) -> Observable<[Comment]>
     func cacheComments(_ comments: [Comment])
 }
 
@@ -64,16 +64,51 @@ extension DatabaseDataProviderImpl: DatabaseDataProvider {
             })
     }
 
-    func getUsers() -> Observable<[User]> {
-        return .never()
+    func getUser(forUserId userId: Int) -> Observable<User?> {
+        return DatabaseHelper.instance.get(
+            entityName: Entities.user.name,
+            predicate: NSPredicate(format: "id == %d", userId),
+            create: { (entity: UserEntity) -> User in
+                return User(
+                    id: Int(entity.id),
+                    name: entity.name ?? "",
+                    username: entity.username ?? "")
+        }).flatMap({ users -> Observable<User?> in
+            if users.isEmpty {
+                return .just(nil)
+            } else if users.count == 1 {
+                return .just(users[0])
+            } else {
+                return .error(DatabaseError.multipleEntitiesFound)
+            }
+        })
     }
 
-    func cacheUsers(_ posts: [User]) {
-
+    func cacheUser(_ user: User) {
+        DatabaseHelper.instance.cache(
+            items: [user],
+            entityName: Entities.user.name,
+            cachedEntityForItem: { (entities: [UserEntity], item: User) in
+                return entities.first { $0.id == item.id }
+            },
+            updateEntityWithItem: { (userEntity: UserEntity, user: User) in
+                userEntity.id = Int32(user.id)
+                userEntity.name = user.name
+                userEntity.username = user.username
+        })
     }
 
-    func getComments() -> Observable<[Comment]> {
-        return .never()
+    func getComments(forPostId postId: Int) -> Observable<[Comment]> {
+        return DatabaseHelper.instance.get(
+            entityName: Entities.comment.name,
+            create: { (entity: CommentEntity) -> Comment in
+                return Comment(
+                    postId: Int(entity.postId),
+                    id: Int(entity.id),
+                    name: entity.name ?? "",
+                    email: entity.email ?? "",
+                    body: entity.body ?? "")
+        })
     }
 
     func cacheComments(_ posts: [Comment]) {

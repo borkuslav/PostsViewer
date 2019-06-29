@@ -8,15 +8,15 @@
 
 import Foundation
 
-struct User: Decodable {
+struct User: Decodable, Identifiable {
     var id: Int
     var name: String
-    var username: String
-    var email: String
-    var address: Address
-    var phone: String
-    var website: String
-    var company: Company
+    var username: String    
+//    var email: String
+//    var address: Address
+//    var phone: String
+//    var website: String
+//    var company: Company
 }
 
 struct Address: Decodable {

@@ -30,70 +30,64 @@ final class DataProvider {
         self.apiDataProvider = apiDataProvider
         self.databaseDataProvider = databaseDataProvider
     }
-
-    private func get<Type>(
-        apiFetch: @escaping () -> Observable<[Type]>,
-        cachingFunction: @escaping ([Type]) -> Void,
-        withDatabaseFallback: Bool,
-        databaseFetch: @escaping () -> Observable<[Type]>) -> Observable<[Type]> {
-
-        return apiFetch()
-            .do(afterNext: { items in
-                cachingFunction(items)
-            })
-            .catchError({ (error) -> Observable<[Type]> in
-                if withDatabaseFallback {
-                    return databaseFetch()
-                        .flatMap { items -> Observable<[Type]> in
-                            if items.isEmpty {
-                                return .error(error)
-                            } else {
-                                return .just(items)
-                            }
-                        }
-                }
-                return .error(error)
-            })
-    }
 }
 
 extension DataProvider: DataProviderType {
 
     func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
-        return get(
-            apiFetch: apiDataProvider.getPosts,
-            cachingFunction: databaseDataProvider.cachePosts,
-            withDatabaseFallback: withDatabaseFallback,
-            databaseFetch: databaseDataProvider.getPosts)
+        return apiDataProvider
+            .getPosts()
+            .do(afterNext: { [weak self] posts in
+                self?.databaseDataProvider.cachePosts(posts)
+            }).catchError({ [weak self] error -> Observable<[Post]> in
+                guard let self = self else {
+                    return .error(error)
+                }
+                return self.databaseDataProvider
+                    .getPosts()
+                    .flatMap({ posts -> Observable<[Post]> in
+                        if posts.isEmpty {
+                            return .error(error)
+                        }
+                        return .just(posts)
+                    })
+            })
     }
 
-    // FIXME: talk to API creators, API should return 'User' based on 'userId'
-    // and '[Comment]' based on 'postId'
     func getPostDetails(forPost post: Post) -> Observable<PostDetails> {
-        let user = get(
-            apiFetch: apiDataProvider.getUsers,
-            cachingFunction: databaseDataProvider.cacheUsers,
-            withDatabaseFallback: true,
-            databaseFetch: databaseDataProvider.getUsers
-        ).map { users in
-            return users.first { $0.id == post.userId }
-        }
-
-        let comments = get(
-            apiFetch: apiDataProvider.getComments,
-            cachingFunction: databaseDataProvider.cacheComments,
-            withDatabaseFallback: true,
-            databaseFetch: databaseDataProvider.getComments
-        ).map { comments in
-            return comments.filter { $0.postId == post.id }
-        }
+        let user = apiDataProvider
+            .getUser(forUserId: post.userId)
+            .do(afterNext: { [weak self] user in
+                self?.databaseDataProvider.cacheUser(user)
+            }).catchError { [weak self] error -> Observable<User> in
+                guard let self = self else {
+                    return .error(error)
+                }
+                return self.databaseDataProvider
+                    .getUser(forUserId: post.userId)
+                    .flatMap({ user -> Observable<User> in
+                        if let user = user {
+                            return .just(user)
+                        }
+                        return .error(PostDetailsError.missingUser)
+                    })
+            }
+        let comments = apiDataProvider
+            .getComments(forPostId: post.id)
+            .do(afterNext: { [weak self] comments in
+                self?.databaseDataProvider.cacheComments(comments)
+            }).catchError { [weak self] error -> Observable<[Comment]> in
+                guard let self = self else {
+                    return .error(error)
+                }
+                return self.databaseDataProvider.getComments(forPostId: post.id)
+            }
 
         return Observable.zip(user, comments)
             .flatMap { (user, comments) -> Observable<PostDetails> in
-                if let user = user {
-                    return .just(PostDetails(post: post, user: user, comments: comments))
-                }
-                return .error(NetworkError.operationFailedPleaseRetry)
-            }
+                return .just(PostDetails(post: post, user: user, comments: comments))
+            }.catchError({ (error) -> Observable<PostDetails> in
+                return .error(error)
+            })
     }
 }

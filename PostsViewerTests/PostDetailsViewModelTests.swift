@@ -93,6 +93,36 @@ class PostDetailsViewModelTests: XCTestCase {
         ])
     }
 
+    // TODO: extract one code for test_ShowPostDetails_OnDetailsLoadingFail & test_ShowPostDetails_OnSuccess_WithIncorrectUser
+    func test_ShowPostDetails_OnDetailsLoadingFail() {
+
+        let post: Post = TestDataParser().loadAndParsePosts()![0]
+        dataProvider.postDetails = scheduler
+            .createColdObservable([.error(20, NetworkError.operationFailedPleaseRetry)])
+            .asObservable()
+
+        let postDetails = scheduler.createObserver(Array<PostSectionViewModelType>.self)
+        viewModel.postDetails
+            .drive(postDetails)
+            .disposed(by: disposeBag)
+
+        let errorText = scheduler.createObserver(String.self)
+        viewModel.errorText
+            .drive(errorText)
+            .disposed(by: disposeBag)
+
+        scheduler.createColdObservable([.next(0, post)])
+            .bind(to: viewModel.showPostsDetails)
+            .disposed(by: disposeBag)
+        scheduler.start()
+
+        XCTAssertEqual(postDetails.events, [.next(20, [])])
+        XCTAssertEqual(errorText.events, [
+            .next(0, ""),
+            .next(20, "Couldn't load data. \nPlease pull to refresh")
+        ])
+    }
+
     private func prepareDataProviderToSuccess(
         forPost post: Post,
         emitPostDetailsAtTestTime testTime: TestTime) -> PostDetails {

@@ -12,6 +12,7 @@ import RxSwift
 
 enum DatabaseError: LocalizedError {
     case noBackgroundContext
+    case multipleEntitiesFound
 }
 
 final class DatabaseHelper {
@@ -20,6 +21,7 @@ final class DatabaseHelper {
 
     func get<Type: Identifiable, EntityType: NSManagedObject>(
         entityName: String,
+        predicate: NSPredicate? = nil,
         create: @escaping (EntityType) -> Type) -> Observable<[Type]> {
 
         return Observable.create { observer in
@@ -31,7 +33,9 @@ final class DatabaseHelper {
             context.perform {
                 debugPrint("## loading entities")
                 do {
-                    let entities = try context.fetch(NSFetchRequest<EntityType>(entityName: entityName))
+                    let fetchRequest = NSFetchRequest<EntityType>(entityName: entityName)
+                    fetchRequest.predicate = predicate
+                    let entities = try context.fetch(fetchRequest)
                     debugPrint("## loading entities OK: \(entities.count)")
                     let items: [Type] = entities.map(create)
                         .sorted(by: { (left, right) in
