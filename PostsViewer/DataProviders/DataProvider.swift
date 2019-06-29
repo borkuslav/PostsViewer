@@ -69,7 +69,7 @@ extension DataProvider: DataProviderType {
                         if let user = user {
                             return .just(user)
                         }
-                        return .error(PostDetailsError.missingUser)
+                        return .error(PostDetailsError.userNotFound)
                     })
             }
         let comments = apiDataProvider
@@ -86,7 +86,7 @@ extension DataProvider: DataProviderType {
         return Observable.zip(user, comments)
             .flatMap { (user, comments) -> Observable<PostDetails> in
                 return .just(PostDetails(post: post, user: user, comments: comments))
-            }.catchError({ (error) -> Observable<PostDetails> in
+            }.catchError({ (error) -> Observable<PostDetails> in // TODO: remove debug code
                 return .error(error)
             })
     }

@@ -27,5 +27,5 @@ enum NetworkError: LocalizedError {
 
 enum PostDetailsError: Error {
     case receivedInvalidPostDetails
-    case missingUser
+    case userNotFound
 }

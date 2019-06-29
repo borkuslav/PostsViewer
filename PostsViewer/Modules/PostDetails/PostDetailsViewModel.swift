@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 protocol PostDetailsViewModelInput {
-
+    var showPostsDetails: AnyObserver<Post> { get }
 }
 
 protocol PostDetailsViewModelOutput {
@@ -19,11 +19,13 @@ protocol PostDetailsViewModelOutput {
     var postDetails: Driver<[PostSectionViewModelType]> { get }
 
     var errorText: Driver<String> { get }
+
+    var loadingViewVisible: Driver<Bool> { get }
 }
 
 protocol PostDetailsViewModelType: PostDetailsViewModelInput, PostDetailsViewModelOutput {
 
-    var showPostsDetails: AnyObserver<Post> { get }
+
 }
 
 class PostDetailsViewModel: PostDetailsViewModelType {
@@ -37,6 +39,8 @@ class PostDetailsViewModel: PostDetailsViewModelType {
     var postDetails: Driver<[PostSectionViewModelType]>
 
     var errorText: Driver<String>
+
+    var loadingViewVisible: Driver<Bool>
 
     // MARK: -
 
@@ -53,6 +57,7 @@ class PostDetailsViewModel: PostDetailsViewModelType {
                     .materialize()
             }.share()
 
+        // TODO: check if this is need
         _postDetails.replay(1)
             .connect()
             .disposed(by: disposeBag)
@@ -82,6 +87,19 @@ class PostDetailsViewModel: PostDetailsViewModelType {
             postSections.elements().map { _ in ""},
             _showPostsDetails.asObservable().map { _ in ""}
         ).asDriver(onErrorDriveWith: .never())
+
+        let _loadingViewVisible = ReplaySubject<Bool>.create(bufferSize: 1)
+        self.loadingViewVisible = _loadingViewVisible
+            .asObservable()
+            .asDriver(onErrorDriveWith: .never())        
+        _showPostsDetails.asObservable()
+            .map { _ in true }
+            .bind(to: _loadingViewVisible)
+            .disposed(by: disposeBag)
+        self.postDetails.map { _ in false }
+            .drive(_loadingViewVisible)
+        .disposed(by: disposeBag)
+
     }
 
     private let postsDetailsProvider: PostsDetailsProvider

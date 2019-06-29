@@ -101,6 +101,7 @@ extension DatabaseDataProvider: DatabaseDataProviderType {
     func getComments(forPostId postId: Int) -> Observable<[Comment]> {
         return DatabaseHelper.instance.get(
             entityName: Entities.comment.name,
+            predicate: NSPredicate(format: "postId == %d", postId),
             create: { (entity: CommentEntity) -> Comment in
                 return Comment(
                     postId: Int(entity.postId),
@@ -111,7 +112,19 @@ extension DatabaseDataProvider: DatabaseDataProviderType {
         })
     }
 
-    func cacheComments(_ posts: [Comment]) {
-
+    func cacheComments(_ comments: [Comment]) {
+        DatabaseHelper.instance.cache(
+            items: comments,
+            entityName: Entities.comment.name,
+            cachedEntityForItem: { (entities: [CommentEntity], item: Comment) in
+                return entities.first { $0.id == item.id }
+            },
+            updateEntityWithItem: { (commentEntity: CommentEntity, comment: Comment) in
+                commentEntity.id = Int32(comment.id)
+                commentEntity.postId = Int32(comment.postId)
+                commentEntity.name = comment.name
+                commentEntity.body = comment.body
+                commentEntity.email = comment.email                
+         })
     }
 }

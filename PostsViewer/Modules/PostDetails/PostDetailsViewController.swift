@@ -15,9 +15,11 @@ class PostDetailsViewController: UIViewController, Storyboarded {
     var viewModel: PostDetailsViewModel!
 
     @IBOutlet weak var tableView: UITableView!
-
+    @IBOutlet weak var errorLabel: UILabel!
+    
     private let disposeBag = DisposeBag()
     private let cellFactory = PostSectionsCellFactory()
+    private lazy var loadingView = LoadingView(parentView: view)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +31,7 @@ class PostDetailsViewController: UIViewController, Storyboarded {
     private func setupUI() {
         title = ""
         view.backgroundColor = .white
+        tableView.backgroundColor = .clear
         tableView.tableFooterView = UIView()
         
         tableView.register(
@@ -49,5 +52,13 @@ class PostDetailsViewController: UIViewController, Storyboarded {
                     inTableView: tableView,
                     forViewModelType: postSection)
             }.disposed(by: disposeBag)
+
+        viewModel.errorText
+            .drive(errorLabel.rx.text)
+            .disposed(by: disposeBag)
+
+        viewModel.loadingViewVisible
+            .drive(loadingView.visible)
+            .disposed(by: disposeBag)
     }
 }
