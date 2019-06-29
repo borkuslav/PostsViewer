@@ -10,7 +10,9 @@ import UIKit
 
 class PostAuthorViewModel {
 
+    let user: User
+
     init(user: User) {
-        
+        self.user = user
     }
 }

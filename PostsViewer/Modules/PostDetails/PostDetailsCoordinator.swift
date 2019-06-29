@@ -26,7 +26,6 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
         let viewController = PostsDetailsViewController()
         viewController.coordinator = self
 
-
         let apiDataProvider = APIDataProviderImp()
         let databaseDataProvider = DatabaseDataProviderImpl()
         let dataProvider = DataProvider(
@@ -34,6 +33,7 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
             databaseDataProvider: databaseDataProvider)
 
         let postDetailsViewModel = PostDetailsViewModel(postsDetailsProvider: dataProvider)
+        viewController.viewModel = postDetailsViewModel
         // TODO: bind show other posts of that autor        
 
         navigationController.pushViewController(viewController, animated: true)

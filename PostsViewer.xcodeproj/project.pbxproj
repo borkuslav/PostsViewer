@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		047DC7F909696CED3C31F8F3 /* Pods_PostsViewerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F315CF5E534B807886BCEC /* Pods_PostsViewerTests.framework */; };
+		A92A64A022C76EB9009972D7 /* Comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A9E4EBD122C763A500A2F489 /* Comments.json */; };
 		A93E43B122BFF9BD0090EE1A /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B022BFF9BD0090EE1A /* Identifiable.swift */; };
 		A93E43B322C14D390090EE1A /* PostsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */; };
 		A93E43B522C14DDE0090EE1A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B422C14DDE0090EE1A /* Errors.swift */; };
@@ -50,6 +51,8 @@
 		A9E4EBC722C6B35500A2F489 /* PostCommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBC622C6B35500A2F489 /* PostCommentsViewModel.swift */; };
 		A9E4EBCB22C6B64A00A2F489 /* PostSectionViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBCA22C6B64A00A2F489 /* PostSectionViewModelType.swift */; };
 		A9E4EBCE22C6B76100A2F489 /* PostDetailsCellFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBCD22C6B76100A2F489 /* PostDetailsCellFactory.swift */; };
+		A9E4EBD022C7638200A2F489 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = A9E4EBCF22C7638200A2F489 /* Users.json */; };
+		A9E4EBD222C763A500A2F489 /* Comments.json in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBD122C763A500A2F489 /* Comments.json */; };
 		E4791E8409EF0880E3FC0E53 /* Pods_PostsViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */; };
 /* End PBXBuildFile section */
 
@@ -115,6 +118,8 @@
 		A9E4EBC622C6B35500A2F489 /* PostCommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCommentsViewModel.swift; sourceTree = "<group>"; };
 		A9E4EBCA22C6B64A00A2F489 /* PostSectionViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSectionViewModelType.swift; sourceTree = "<group>"; };
 		A9E4EBCD22C6B76100A2F489 /* PostDetailsCellFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsCellFactory.swift; sourceTree = "<group>"; };
+		A9E4EBCF22C7638200A2F489 /* Users.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
+		A9E4EBD122C763A500A2F489 /* Comments.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Comments.json; sourceTree = "<group>"; };
 		D60C27510B63546D40CFBCEB /* Pods-PostsViewerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewerTests.release.xcconfig"; path = "Target Support Files/Pods-PostsViewerTests/Pods-PostsViewerTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -161,6 +166,8 @@
 			isa = PBXGroup;
 			children = (
 				A93E43BF22C162910090EE1A /* Posts.json */,
+				A9E4EBCF22C7638200A2F489 /* Users.json */,
+				A9E4EBD122C763A500A2F489 /* Comments.json */,
 				A93E43C222C1632E0090EE1A /* TestDataParser.swift */,
 			);
 			path = TestData;
@@ -429,6 +436,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A92A64A022C76EB9009972D7 /* Comments.json in Resources */,
+				A9E4EBD022C7638200A2F489 /* Users.json in Resources */,
 				A93E43C022C162910090EE1A /* Posts.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -600,6 +609,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A93E43C522C2B0A70090EE1A /* DataProviderTests.swift in Sources */,
+				A9E4EBD222C763A500A2F489 /* Comments.json in Sources */,
 				A9E4EBAA22C695FC00A2F489 /* PostDetailsViewModelTests.swift in Sources */,
 				A93E43C322C1632E0090EE1A /* TestDataParser.swift in Sources */,
 				A93E43B322C14D390090EE1A /* PostsViewModelTests.swift in Sources */,

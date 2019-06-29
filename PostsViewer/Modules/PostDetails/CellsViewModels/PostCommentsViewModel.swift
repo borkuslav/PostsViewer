@@ -10,7 +10,9 @@ import UIKit
 
 class PostCommentsViewModel {
 
+    let comments: [Comment]
+
     init(comments: [Comment]) {
-        
+        self.comments = comments
     }
 }

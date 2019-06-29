@@ -10,7 +10,9 @@ import UIKit
 
 class PostContentViewModel {
 
+    private(set) var post: Post
+
     init(post: Post) {
-        
+        self.post = post
     }
 }
