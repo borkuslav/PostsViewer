@@ -74,11 +74,11 @@ class PostsViewModel: PostsViewModelType {
         self.refreshPosts = _refreshPosts.asObserver()
 
         let _posts = Observable.merge(
-            _viewDidLoad.asObservable().map { _ -> Bool in true },
-            _refreshPosts.asObservable().map { _ -> Bool in false }
-        ).flatMap({ withDatabaseFallback in
+            _viewDidLoad.asObservable(),
+            _refreshPosts.asObservable()
+        ).flatMap({ _ in
             return postsProvider
-                .getPosts(withDatabaseFallback: withDatabaseFallback)
+                .getPosts()
                 .materialize()
         }).share()
 

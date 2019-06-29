@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 protocol PostsProvider {
-    func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]>
+    func getPosts() -> Observable<[Post]>
 }
 
 protocol PostsDetailsProvider {
@@ -34,7 +34,7 @@ final class DataProvider {
 
 extension DataProvider: DataProviderType {
 
-    func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
+    func getPosts() -> Observable<[Post]> {
         return apiDataProvider
             .getPosts()
             .do(afterNext: { [weak self] posts in

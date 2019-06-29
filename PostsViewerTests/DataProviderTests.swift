@@ -42,10 +42,10 @@ class DataProviderTests: XCTestCase {
             .createColdObservable([.next(10, postsList)])
             .asObservable()
 
-        runTestAndCheckGetPostResults(withFallback: true, expected: [.next(10, postsList)])
+        runTestAndCheckGetPostResults(expected: [.next(10, postsList)])
     }
 
-    func test_FailLoadingPostsFromAPI_WithDatabaseFallback_WhenNoCachedPosts_EmitError() {
+    func test_FailLoadingPostsFromAPI_WhenNoCachedPosts_EmitError() {
         let error = NetworkError.operationFailedPleaseRetry
         apiDataProvider.posts = scheduler
             .createColdObservable([.error(10, error)])
@@ -54,10 +54,10 @@ class DataProviderTests: XCTestCase {
             .createColdObservable([.next(20, [])])
             .asObservable()
 
-        runTestAndCheckGetPostResults(withFallback: true, expected: [.error(30, error)])
+        runTestAndCheckGetPostResults(expected: [.error(30, error)])
     }
 
-    func test_FailLoadingPostsFromAPI_WithDatabaseFallback_WhenCachedPostsAvailable_EmitPosts() {
+    func test_FailLoadingPostsFromAPI_WhenCachedPostsAvailable_EmitPosts() {
         let error = NetworkError.operationFailedPleaseRetry
         let postsList = TestDataParser().loadAndParsePosts()!
 
@@ -68,13 +68,13 @@ class DataProviderTests: XCTestCase {
             .createColdObservable([.next(20, postsList)])
             .asObservable()
 
-        runTestAndCheckGetPostResults(withFallback: true, expected: [.next(30, postsList)])
+        runTestAndCheckGetPostResults(expected: [.next(30, postsList)])
     }
 
-    private func runTestAndCheckGetPostResults(withFallback: Bool, expected: [Recorded<Event<[Post]>>]) {
+    private func runTestAndCheckGetPostResults(expected: [Recorded<Event<[Post]>>]) {
 
         let posts = scheduler.createObserver([Post].self)
-        dataProvider.getPosts(withDatabaseFallback: withFallback)
+        dataProvider.getPosts()
             .bind(to: posts)
             .disposed(by: disposeBag)
 
@@ -96,7 +96,7 @@ class DataProviderTests: XCTestCase {
             .createColdObservable([.next(20, postsList)])
             .asObservable()
 
-        dataProvider.getPosts(withDatabaseFallback: true)
+        dataProvider.getPosts()
             .subscribe()
             .disposed(by: disposeBag)
 
@@ -122,7 +122,7 @@ class DataProviderTests: XCTestCase {
             .createColdObservable([.error(20, error)])
             .asObservable()
 
-        dataProvider.getPosts(withDatabaseFallback: false)
+        dataProvider.getPosts()
             .subscribe()
             .disposed(by: disposeBag)
 

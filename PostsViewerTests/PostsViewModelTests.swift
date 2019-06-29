@@ -92,7 +92,7 @@ class PostsViewModelTests: XCTestCase {
         onPostsLoaded_ClearErrorText(observer: viewModel.viewDidLoad)
     }
 
-    func test_RefreshPostsOnPostLoadedClearErrorText() {
+    func test_RefreshPosts_OnPostLoaded_ClearErrorText() {
         onPostsLoaded_ClearErrorText(observer: viewModel.refreshPosts)
     }
 
@@ -195,30 +195,6 @@ class PostsViewModelTests: XCTestCase {
         XCTAssertEqual(loadingViewVisible.events, expectedEvents)
     }
 
-    func test_RefreshPosts_NotUseDatabaseFallback() {
-        test_UseDatabaseFallback(observer: viewModel.refreshPosts, shouldUseDatabaseFallback: false)
-    }
-
-    func test_ViewDidLoad_UseDatabaseFallback() {
-        test_UseDatabaseFallback(observer: viewModel.viewDidLoad, shouldUseDatabaseFallback: true)
-    }
-
-    private func test_UseDatabaseFallback(observer: AnyObserver<()>, shouldUseDatabaseFallback: Bool) {
-        let postsList = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
-
-        _ = createPostsTestableObserver(forPosts: postsList)
-
-        let withDatabaseFallback = scheduler.createObserver(Bool.self)
-        postsProvider.withDatabaseFallback.asObservable()
-            .bind(to: withDatabaseFallback)
-            .disposed(by: disposeBag)
-
-        fakeEvent(observer: observer, atTestTime: 0)
-        scheduler.start()
-
-        XCTAssertEqual(withDatabaseFallback.events, [.next(0, shouldUseDatabaseFallback)])
-    }
-
     func test_SelectPost_EmitPost() {
 
         let post = TestDataParser().loadAndParsePosts()![0]
@@ -273,10 +249,7 @@ private class PostsProviderFake: PostsProvider {
 
     var posts: Observable<[Post]>!
 
-    var withDatabaseFallback = PublishSubject<Bool>()
-
-    func getPosts(withDatabaseFallback: Bool) -> Observable<[Post]> {
-        self.withDatabaseFallback.onNext(withDatabaseFallback)
+    func getPosts() -> Observable<[Post]> {
         return posts
     }
 }
