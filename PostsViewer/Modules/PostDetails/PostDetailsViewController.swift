@@ -17,7 +17,7 @@ class PostDetailsViewController: UIViewController, Storyboarded {
     @IBOutlet weak var tableView: UITableView!
 
     private let disposeBag = DisposeBag()
-    private let cellFactory = PostDetailsCellFactory()
+    private let cellFactory = PostSectionsCellFactory()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,8 @@ class PostDetailsViewController: UIViewController, Storyboarded {
 
     private func setupUI() {
         title = "Post details"
-        view.backgroundColor = .white        
+        view.backgroundColor = .white
+        //tableView.register
     }
 
     private func setupBindings() {

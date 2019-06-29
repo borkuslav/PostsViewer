@@ -10,7 +10,7 @@ import Foundation
 
 import UIKit
 
-class PostDetailsCommentsCell: UITableViewCell {
+class PostSectionCommentsCell: UITableViewCell {
 
     func setup(viewModel: PostCommentsViewModel) {
 

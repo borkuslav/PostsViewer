@@ -8,7 +8,13 @@
 
 import UIKit
 
-class PostDetailsCellFactory {
+enum PostSectionCellReuseIdentifier: String {
+    case authorCellReuseIdentifier
+    case contentCellReuseIdentifier
+    case commentsCellReuseIdentifier
+}
+
+class PostSectionsCellFactory {
 
     func makeCell(
         inTableView tableView: UITableView,

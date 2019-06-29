@@ -10,7 +10,7 @@ import Foundation
 
 import UIKit
 
-class PostDetailsAuthorCell: UITableViewCell {
+class PostSectionAuthorCell: UITableViewCell {
 
     func setup(viewModel: PostAuthorViewModel) {
 

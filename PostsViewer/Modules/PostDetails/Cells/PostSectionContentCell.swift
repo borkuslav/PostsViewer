@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PostDetailsTitleCell: UITableViewCell {
+class PostSectionContentCell: UITableViewCell {
 
     func setup(viewModel: PostContentViewModel) {
         
