@@ -9,7 +9,7 @@
 import UIKit
 import RxSwift
 
-class PostsDetailsViewController: UIViewController, Storyboarded {
+class PostDetailsViewController: UIViewController, Storyboarded {
 
     var coordinator: CoordinatorType!
     var viewModel: PostDetailsViewModel!

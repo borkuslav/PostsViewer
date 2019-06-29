@@ -23,10 +23,10 @@ protocol DataProviderType: PostsProvider, PostsDetailsProvider {
 
 final class DataProvider {
 
-    private var apiDataProvider: APIDataProvider
+    private var apiDataProvider: APIDataProviderType
     private var databaseDataProvider: DatabaseDataProvider
 
-    init(apiDataProvider: APIDataProvider, databaseDataProvider: DatabaseDataProvider) {
+    init(apiDataProvider: APIDataProviderType, databaseDataProvider: DatabaseDataProvider) {
         self.apiDataProvider = apiDataProvider
         self.databaseDataProvider = databaseDataProvider
     }
@@ -67,7 +67,33 @@ extension DataProvider: DataProviderType {
             databaseFetch: databaseDataProvider.getPosts)
     }
 
+    // FIXME: talk to API creators, API should return 'User' based on 'userId'
+    // and '[Comment]' based on 'postId'
     func getPostDetails(forPost post: Post) -> Observable<PostDetails> {
-        return .never()
+        let user = get(
+            apiFetch: apiDataProvider.getUsers,
+            cachingFunction: databaseDataProvider.cacheUsers,
+            withDatabaseFallback: true,
+            databaseFetch: databaseDataProvider.getUsers
+        ).map { users in
+            return users.first { $0.id == post.userId }
+        }
+
+        let comments = get(
+            apiFetch: apiDataProvider.getComments,
+            cachingFunction: databaseDataProvider.cacheComments,
+            withDatabaseFallback: true,
+            databaseFetch: databaseDataProvider.getComments
+        ).map { comments in
+            return comments.filter { $0.postId == post.id }
+        }
+
+        return Observable.zip(user, comments)
+            .flatMap { (user, comments) -> Observable<PostDetails> in
+                if let user = user {
+                    return .just(PostDetails(post: post, user: user, comments: comments))
+                }
+                return .error(NetworkError.operationFailedPleaseRetry)
+            }
     }
 }

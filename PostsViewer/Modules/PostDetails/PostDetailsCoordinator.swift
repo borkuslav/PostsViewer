@@ -23,7 +23,10 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
 
     override func start(withInput input: Post, andTransition transitionType: TransitionType) -> Observable<Void> {
         
-        let viewController = PostsDetailsViewController()
+        guard let viewController = PostDetailsViewController.initFromStoryboard(name: "PostDetails") else {
+            return .never()
+        }
+
         viewController.coordinator = self
 
         let apiDataProvider = APIDataProviderImp()
@@ -34,7 +37,9 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
 
         let postDetailsViewModel = PostDetailsViewModel(postsDetailsProvider: dataProvider)
         viewController.viewModel = postDetailsViewModel
-        // TODO: bind show other posts of that autor        
+        // TODO: bind show other posts of that autor
+        // TODO: bind show user profile
+        // TODO: bind show comments
 
         navigationController.pushViewController(viewController, animated: true)
 

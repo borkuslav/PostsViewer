@@ -137,7 +137,7 @@ class DataProviderTests: XCTestCase {
     }
 }
 
-class FakeAPIDataProvider: APIDataProvider {
+class FakeAPIDataProvider: APIDataProviderType {
 
     var posts: Observable<[Post]>!
     var users: Observable<[User]>!

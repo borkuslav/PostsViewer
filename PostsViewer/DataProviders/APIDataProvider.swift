@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-protocol APIDataProvider {
+protocol APIDataProviderType {
     func getPosts() -> Observable<[Post]>
     func getUsers() -> Observable<[User]>
     func getComments() -> Observable<[Comment]>
@@ -33,7 +33,7 @@ final class APIDataProviderImp {
     }
 }
 
-extension APIDataProviderImp: APIDataProvider {
+extension APIDataProviderImp: APIDataProviderType {
 
     func getPosts() -> Observable<[Post]> {
         return get(url: URL(string: Constants.postsUrlString)!)

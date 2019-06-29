@@ -6,6 +6,39 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <scenes/>
+    <scenes>
+        <!--Post Details View Controller-->
+        <scene sceneID="y86-EO-mR8">
+            <objects>
+                <viewController storyboardIdentifier="PostDetailsViewController" id="m9U-8a-eTU" customClass="PostDetailsViewController" customModule="PostsViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pGi-vV-Xan">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="sh7-NR-51p">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="sh7-NR-51p" firstAttribute="top" secondItem="3xs-Xi-6Fh" secondAttribute="top" id="R6x-jS-iIQ"/>
+                            <constraint firstItem="3xs-Xi-6Fh" firstAttribute="trailing" secondItem="sh7-NR-51p" secondAttribute="trailing" id="Wro-EJ-NuK"/>
+                            <constraint firstItem="sh7-NR-51p" firstAttribute="leading" secondItem="3xs-Xi-6Fh" secondAttribute="leading" id="ZhR-lK-D7t"/>
+                            <constraint firstItem="3xs-Xi-6Fh" firstAttribute="bottom" secondItem="sh7-NR-51p" secondAttribute="bottom" id="qJ3-4X-sIK"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="3xs-Xi-6Fh"/>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="sh7-NR-51p" id="a6s-pW-T8o"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YZk-c6-ukp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-465" y="-202"/>
+        </scene>
+    </scenes>
 </document>
