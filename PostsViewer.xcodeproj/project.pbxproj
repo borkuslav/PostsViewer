@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		047DC7F909696CED3C31F8F3 /* Pods_PostsViewerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50F315CF5E534B807886BCEC /* Pods_PostsViewerTests.framework */; };
 		A92A64A022C76EB9009972D7 /* Comments.json in Resources */ = {isa = PBXBuildFile; fileRef = A9E4EBD122C763A500A2F489 /* Comments.json */; };
+		A92A64A222C7AE51009972D7 /* PostSectionsCellFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A64A122C7AE51009972D7 /* PostSectionsCellFactory.swift */; };
 		A93E43B122BFF9BD0090EE1A /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B022BFF9BD0090EE1A /* Identifiable.swift */; };
 		A93E43B322C14D390090EE1A /* PostsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */; };
 		A93E43B522C14DDE0090EE1A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B422C14DDE0090EE1A /* Errors.swift */; };
@@ -50,7 +51,6 @@
 		A9E4EBC522C6B33C00A2F489 /* PostAuthorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBC422C6B33C00A2F489 /* PostAuthorViewModel.swift */; };
 		A9E4EBC722C6B35500A2F489 /* PostCommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBC622C6B35500A2F489 /* PostCommentsViewModel.swift */; };
 		A9E4EBCB22C6B64A00A2F489 /* PostSectionViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBCA22C6B64A00A2F489 /* PostSectionViewModelType.swift */; };
-		A9E4EBCE22C6B76100A2F489 /* PostSectionsCellFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBCD22C6B76100A2F489 /* PostSectionsCellFactory.swift */; };
 		A9E4EBD022C7638200A2F489 /* Users.json in Resources */ = {isa = PBXBuildFile; fileRef = A9E4EBCF22C7638200A2F489 /* Users.json */; };
 		A9E4EBD222C763A500A2F489 /* Comments.json in Sources */ = {isa = PBXBuildFile; fileRef = A9E4EBD122C763A500A2F489 /* Comments.json */; };
 		E4791E8409EF0880E3FC0E53 /* Pods_PostsViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CBA5D74DBDDB2A5BCE70B6 /* Pods_PostsViewer.framework */; };
@@ -71,6 +71,7 @@
 		2B3E1D276990B149D8680108 /* Pods-PostsViewer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewer.release.xcconfig"; path = "Target Support Files/Pods-PostsViewer/Pods-PostsViewer.release.xcconfig"; sourceTree = "<group>"; };
 		50F315CF5E534B807886BCEC /* Pods_PostsViewerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostsViewerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		932CD8AA20E41BE052BAE2E1 /* Pods-PostsViewer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewer.debug.xcconfig"; path = "Target Support Files/Pods-PostsViewer/Pods-PostsViewer.debug.xcconfig"; sourceTree = "<group>"; };
+		A92A64A122C7AE51009972D7 /* PostSectionsCellFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostSectionsCellFactory.swift; sourceTree = "<group>"; };
 		A93E43B022BFF9BD0090EE1A /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModelTests.swift; sourceTree = "<group>"; };
 		A93E43B422C14DDE0090EE1A /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -117,7 +118,6 @@
 		A9E4EBC422C6B33C00A2F489 /* PostAuthorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostAuthorViewModel.swift; sourceTree = "<group>"; };
 		A9E4EBC622C6B35500A2F489 /* PostCommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCommentsViewModel.swift; sourceTree = "<group>"; };
 		A9E4EBCA22C6B64A00A2F489 /* PostSectionViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSectionViewModelType.swift; sourceTree = "<group>"; };
-		A9E4EBCD22C6B76100A2F489 /* PostSectionsCellFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostSectionsCellFactory.swift; sourceTree = "<group>"; };
 		A9E4EBCF22C7638200A2F489 /* Users.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Users.json; sourceTree = "<group>"; };
 		A9E4EBD122C763A500A2F489 /* Comments.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Comments.json; sourceTree = "<group>"; };
 		D60C27510B63546D40CFBCEB /* Pods-PostsViewerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostsViewerTests.release.xcconfig"; path = "Target Support Files/Pods-PostsViewerTests/Pods-PostsViewerTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -309,10 +309,10 @@
 		A9E4EBBB22C6B1D500A2F489 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				A92A64A122C7AE51009972D7 /* PostSectionsCellFactory.swift */,
 				A9E4EBBE22C6B1FE00A2F489 /* PostSectionAuthorCell.swift */,
 				A9E4EBBC22C6B1E800A2F489 /* PostSectionContentCell.swift */,
 				A9E4EBC022C6B21900A2F489 /* PostSectionCommentsCell.swift */,
-				A9E4EBCD22C6B76100A2F489 /* PostSectionsCellFactory.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -570,7 +570,7 @@
 			files = (
 				A9E4EBA122C695DA00A2F489 /* PostDetails.swift in Sources */,
 				A975FB8F22BE209B00CB79D5 /* PostsViewModel.swift in Sources */,
-				A9E4EBCE22C6B76100A2F489 /* PostSectionsCellFactory.swift in Sources */,
+				A92A64A222C7AE51009972D7 /* PostSectionsCellFactory.swift in Sources */,
 				A93E43B722C14E070090EE1A /* Constants.swift in Sources */,
 				A93E43BB22C1512E0090EE1A /* DatabaseDataProvider.swift in Sources */,
 				A9E4EBA622C695E700A2F489 /* PostDetailsViewModel.swift in Sources */,
