@@ -15,7 +15,7 @@ class PostDetailsCellFactory {
         forViewModelType viewModelType: PostSectionViewModelType) -> UITableViewCell {
 
         switch  viewModelType {
-        case .title(let titleViewModel):
+        case .content(let contentViewModel):
             return UITableViewCell()
         case .author(let authorViewModel):
             return UITableViewCell()

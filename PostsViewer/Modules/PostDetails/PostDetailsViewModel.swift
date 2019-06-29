@@ -62,7 +62,7 @@ class PostDetailsViewModel: PostDetailsViewModelType {
                 if let validatedPostDetails = PostDetailsValidator().validate(postDetails) {
                     return .just([
                         .author(PostAuthorViewModel(user: validatedPostDetails.user)),
-                        .title(PostContentViewModel(post: validatedPostDetails.post)),
+                        .content(PostContentViewModel(post: validatedPostDetails.post)),
                         .comments(PostCommentsViewModel(comments: validatedPostDetails.comments))
                     ])
                 } else {

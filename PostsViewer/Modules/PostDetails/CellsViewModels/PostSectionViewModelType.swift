@@ -9,7 +9,7 @@
 import Foundation
 
 enum PostSectionViewModelType {
-    case title(PostContentViewModel)
     case author(PostAuthorViewModel)
+    case content(PostContentViewModel)
     case comments(PostCommentsViewModel)
 }

@@ -40,7 +40,7 @@ class PostDetailsViewModelTests: XCTestCase {
         let postDetailsModel = prepareDataProviderToSuccess(forPost: post, emitPostDetailsAtTestTime: 10)
         let expectedResult: [PostSectionViewModelType] = [
             .author(PostAuthorViewModel(user: postDetailsModel.user)),
-            .title(PostContentViewModel(post: post)),
+            .content(PostContentViewModel(post: post)),
             .comments(PostCommentsViewModel(comments: postDetailsModel.comments))
         ]
 
@@ -184,7 +184,7 @@ extension PostSectionViewModelType: Equatable {
 
     static public func == (lhs: PostSectionViewModelType, rhs: PostSectionViewModelType) -> Bool {
         switch (lhs, rhs) {
-        case (let .title(lvm), let .title(rvm)):
+        case (let .content(lvm), let .content(rvm)):
             return lvm == rvm
         case (let .author(lvm), let .author(rvm)):
             return lvm == rvm
