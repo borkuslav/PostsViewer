@@ -27,7 +27,7 @@ class PostsCoordinator: BaseCoordinator<Void, Void> {
         viewController.coordinator = self
 
         let apiDataProvider = APIDataProviderImp()
-        let databaseDataProvider = DatabaseDataProviderImpl()
+        let databaseDataProvider = DatabaseDataProvider()
         let dataProvider = DataProvider(
             apiDataProvider: apiDataProvider,
             databaseDataProvider: databaseDataProvider)

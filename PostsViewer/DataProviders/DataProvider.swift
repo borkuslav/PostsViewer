@@ -24,9 +24,9 @@ protocol DataProviderType: PostsProvider, PostsDetailsProvider {
 final class DataProvider {
 
     private var apiDataProvider: APIDataProviderType
-    private var databaseDataProvider: DatabaseDataProvider
+    private var databaseDataProvider: DatabaseDataProviderType
 
-    init(apiDataProvider: APIDataProviderType, databaseDataProvider: DatabaseDataProvider) {
+    init(apiDataProvider: APIDataProviderType, databaseDataProvider: DatabaseDataProviderType) {
         self.apiDataProvider = apiDataProvider
         self.databaseDataProvider = databaseDataProvider
     }

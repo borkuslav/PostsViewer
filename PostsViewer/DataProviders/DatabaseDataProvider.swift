@@ -20,7 +20,7 @@ enum Entities: String {
     }
 }
 
-protocol DatabaseDataProvider: class {
+protocol DatabaseDataProviderType: class {
     func getPosts() -> Observable<[Post]>
     func cachePosts(_ posts: [Post])
 
@@ -31,11 +31,11 @@ protocol DatabaseDataProvider: class {
     func cacheComments(_ comments: [Comment])
 }
 
-final class DatabaseDataProviderImpl {
+final class DatabaseDataProvider {
     
 }
 
-extension DatabaseDataProviderImpl: DatabaseDataProvider {
+extension DatabaseDataProvider: DatabaseDataProviderType {
 
     func getPosts() -> Observable<[Post]> {
         return DatabaseHelper.instance.get(

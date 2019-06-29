@@ -150,7 +150,7 @@ class FakeAPIDataProvider: APIDataProviderType {
     }
 }
 
-class FakeDatabaseDataProvider: DatabaseDataProvider {
+class FakeDatabaseDataProvider: DatabaseDataProviderType {
 
     var posts: Observable<[Post]>!
     func getPosts() -> Observable<[Post]> {

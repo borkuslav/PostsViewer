@@ -13,12 +13,12 @@
 		A92A64A522C7AF34009972D7 /* PostSectionAuthorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A92A64A322C7AF34009972D7 /* PostSectionAuthorCell.xib */; };
 		A92A64A822C7AF4C009972D7 /* PostSectionContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A92A64A622C7AF4C009972D7 /* PostSectionContentCell.xib */; };
 		A92A64AB22C7AF64009972D7 /* PostSectionCommentsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A92A64A922C7AF64009972D7 /* PostSectionCommentsCell.xib */; };
+		A92A64AD22C7F962009972D7 /* DatabaseDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A64AC22C7F962009972D7 /* DatabaseDataProvider.swift */; };
 		A93E43B122BFF9BD0090EE1A /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B022BFF9BD0090EE1A /* Identifiable.swift */; };
 		A93E43B322C14D390090EE1A /* PostsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */; };
 		A93E43B522C14DDE0090EE1A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B422C14DDE0090EE1A /* Errors.swift */; };
 		A93E43B722C14E070090EE1A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B622C14E070090EE1A /* Constants.swift */; };
 		A93E43B922C14F2F0090EE1A /* APIDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43B822C14F2F0090EE1A /* APIDataProvider.swift */; };
-		A93E43BB22C1512E0090EE1A /* DatabaseDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43BA22C1512E0090EE1A /* DatabaseDataProvider.swift */; };
 		A93E43C022C162910090EE1A /* Posts.json in Resources */ = {isa = PBXBuildFile; fileRef = A93E43BF22C162910090EE1A /* Posts.json */; };
 		A93E43C322C1632E0090EE1A /* TestDataParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43C222C1632E0090EE1A /* TestDataParser.swift */; };
 		A93E43C522C2B0A70090EE1A /* DataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93E43C422C2B0A70090EE1A /* DataProviderTests.swift */; };
@@ -78,12 +78,12 @@
 		A92A64A422C7AF34009972D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = PostsViewer/Base.lproj/PostSectionAuthorCell.xib; sourceTree = SOURCE_ROOT; };
 		A92A64A722C7AF4C009972D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = PostsViewer/Base.lproj/PostSectionContentCell.xib; sourceTree = SOURCE_ROOT; };
 		A92A64AA22C7AF64009972D7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = PostsViewer/Base.lproj/PostSectionCommentsCell.xib; sourceTree = SOURCE_ROOT; };
+		A92A64AC22C7F962009972D7 /* DatabaseDataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseDataProvider.swift; sourceTree = "<group>"; };
 		A93E43B022BFF9BD0090EE1A /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		A93E43B222C14D390090EE1A /* PostsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewModelTests.swift; sourceTree = "<group>"; };
 		A93E43B422C14DDE0090EE1A /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		A93E43B622C14E070090EE1A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A93E43B822C14F2F0090EE1A /* APIDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIDataProvider.swift; sourceTree = "<group>"; };
-		A93E43BA22C1512E0090EE1A /* DatabaseDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseDataProvider.swift; sourceTree = "<group>"; };
 		A93E43BF22C162910090EE1A /* Posts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Posts.json; sourceTree = "<group>"; };
 		A93E43C222C1632E0090EE1A /* TestDataParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDataParser.swift; sourceTree = "<group>"; };
 		A93E43C422C2B0A70090EE1A /* DataProviderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataProviderTests.swift; sourceTree = "<group>"; };
@@ -163,7 +163,7 @@
 			children = (
 				A9E4EB9E22C6934500A2F489 /* DataProvider.swift */,
 				A93E43B822C14F2F0090EE1A /* APIDataProvider.swift */,
-				A93E43BA22C1512E0090EE1A /* DatabaseDataProvider.swift */,
+				A92A64AC22C7F962009972D7 /* DatabaseDataProvider.swift */,
 			);
 			path = DataProviders;
 			sourceTree = "<group>";
@@ -584,7 +584,6 @@
 				A975FB8F22BE209B00CB79D5 /* PostsViewModel.swift in Sources */,
 				A92A64A222C7AE51009972D7 /* PostSectionsCellFactory.swift in Sources */,
 				A93E43B722C14E070090EE1A /* Constants.swift in Sources */,
-				A93E43BB22C1512E0090EE1A /* DatabaseDataProvider.swift in Sources */,
 				A9E4EBA622C695E700A2F489 /* PostDetailsViewModel.swift in Sources */,
 				A9E4EBCB22C6B64A00A2F489 /* PostSectionViewModelType.swift in Sources */,
 				A975FBAA22BE75C900CB79D5 /* Post.swift in Sources */,
@@ -607,6 +606,7 @@
 				A975FB9422BE20D300CB79D5 /* RootCoordinator.swift in Sources */,
 				A9E4EBC122C6B21900A2F489 /* PostSectionCommentsCell.swift in Sources */,
 				A93E43D022C4180D0090EE1A /* CoordinatorType.swift in Sources */,
+				A92A64AD22C7F962009972D7 /* DatabaseDataProvider.swift in Sources */,
 				A96F48AD22BE1ADA00A73CBE /* AppDelegate.swift in Sources */,
 				A975FBA522BE49E500CB79D5 /* LoadingView.swift in Sources */,
 				A9E4EBC722C6B35500A2F489 /* PostCommentsViewModel.swift in Sources */,
