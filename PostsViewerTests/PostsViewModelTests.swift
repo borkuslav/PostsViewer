@@ -15,17 +15,6 @@ import RxBlocking
 
 @testable import PostsViewer
 
-/* What to test?
- - on [refreshPosts] / on [viewDidLoad]
-    -> should call [DataProvider.getPosts]
-    -> should emit [posts] on success
-    -> should emit [errorText] before request and after
-    -> should emit [loadingViewVisible:false] before request and after
-    -> should emit [hideRefreshIndicator] after request
- - on [viewDidLoad]
-    -> should emit [loadingViewVisible:true]
-
- */
 class PostsViewModelTests: XCTestCase {
 
     var scheduler: TestScheduler!
@@ -52,12 +41,9 @@ class PostsViewModelTests: XCTestCase {
 
     private func onPostsLoaded_EmitPosts(observer: AnyObserver<Void>) {
 
-        let postsList = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
+        let postsList = emitNextPosts(atTestTime: 10)
 
-        let posts = scheduler.createObserver(Array<Post>.self)
-        viewModel.posts
-            .drive(posts)
-            .disposed(by: disposeBag)
+        let posts = createPostsObserver(forPosts: postsList)
 
         fakeEvent(observer: observer, atTestTime: 0)
         scheduler.start()
@@ -75,7 +61,7 @@ class PostsViewModelTests: XCTestCase {
 
     private func onPostsLoadFail_EmitEmptyPosts(observer: AnyObserver<Void>) {
 
-        _ = prepareDataProviderToFailure(emitPostsAtTestTime: 10, error: FakeError.error)
+        _ = emitErrorPosts(atTestTime: 10, error: FakeError.error)
 
         let posts = scheduler.createObserver(Array<Post>.self)
         viewModel.posts
@@ -98,12 +84,9 @@ class PostsViewModelTests: XCTestCase {
 
     private func onPostsLoaded_ClearErrorText(observer: AnyObserver<Void>) {
 
-        _ = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
+        _ = emitNextPosts(atTestTime: 10)
 
-        let errorText = scheduler.createObserver(String.self)
-        viewModel.errorText
-            .drive(errorText)
-            .disposed(by: disposeBag)
+        let errorText = createErrorTextObserver()
 
         fakeEvent(observer: viewModel.refreshPosts, atTestTime: 0)
         scheduler.start()
@@ -128,14 +111,9 @@ class PostsViewModelTests: XCTestCase {
 
     private func onPostLoadFail_EmitErrorText(observer: AnyObserver<Void>, error: Error) {
 
-        _ = prepareDataProviderToFailure(
-            emitPostsAtTestTime: 10,
-            error: error)
+        _ = emitErrorPosts(atTestTime: 10, error: error)
 
-        let errorText = scheduler.createObserver(String.self)
-        viewModel.errorText
-            .drive(errorText)
-            .disposed(by: disposeBag)
+        let errorText = createErrorTextObserver()
 
         fakeEvent(observer: viewModel.refreshPosts, atTestTime: 0)
         scheduler.start()
@@ -147,14 +125,14 @@ class PostsViewModelTests: XCTestCase {
     }
 
     func test_RefreshPosts_OnPostsLoaded_HideLoadingView() {
-        _ = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
+        _ = emitNextPosts(atTestTime: 10)
         test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.refreshPosts,
             expectedEvents: [ .next(10, false) ])
     }
 
     func test_ViewDidLoad_OnPostsLoaded_HideLoadingView() {
-        _ = prepareDataProviderToSuccess(emitPostsAtTestTime: 10)
+        _ = emitNextPosts(atTestTime: 10)
         test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.viewDidLoad,
             expectedEvents: [
@@ -164,14 +142,14 @@ class PostsViewModelTests: XCTestCase {
     }
 
     func test_RefreshPosts_OnPostsLoadFail_HideLoadingView() {
-        prepareDataProviderToFailure(emitPostsAtTestTime: 10, error: NetworkError.operationFailedPleaseRetry)
+        emitErrorPosts(atTestTime: 10, error: NetworkError.operationFailedPleaseRetry)
         test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.refreshPosts,
             expectedEvents: [ .next(10, false) ])
     }
 
     func test_ViewDidLoad_OnPostsLoadFail_HideLoadingView() {
-        prepareDataProviderToFailure(emitPostsAtTestTime: 10, error: NetworkError.operationFailedPleaseRetry)
+        emitErrorPosts(atTestTime: 10, error: NetworkError.operationFailedPleaseRetry)
         test_OnPostsLoadedOrFail_HideLoadingView(
             observer: viewModel.viewDidLoad,
             expectedEvents: [
@@ -184,10 +162,7 @@ class PostsViewModelTests: XCTestCase {
         observer: AnyObserver<()>,
         expectedEvents: [Recorded<Event<Bool>>]) {
 
-        let loadingViewVisible = scheduler.createObserver(Bool.self)
-        viewModel.loadingViewVisible
-            .drive(loadingViewVisible)
-            .disposed(by: disposeBag)
+        let loadingViewVisible = createLoadingViewVisibleObserver()
 
         fakeEvent(observer: observer, atTestTime: 0)
         scheduler.start()
@@ -212,7 +187,7 @@ class PostsViewModelTests: XCTestCase {
         XCTAssertEqual(selectedPost.events, [.next(10, post)])
     }
 
-    private func prepareDataProviderToSuccess(emitPostsAtTestTime testTime: TestTime) -> [Post] {
+    private func emitNextPosts(atTestTime testTime: TestTime) -> [Post] {
         let postsList: [Post] = TestDataParser().loadAndParsePosts()!
         postsProvider.posts = scheduler
             .createColdObservable([.next(testTime, postsList)])
@@ -220,7 +195,7 @@ class PostsViewModelTests: XCTestCase {
         return postsList
     }
 
-    private func prepareDataProviderToFailure(emitPostsAtTestTime testTime: TestTime, error: Error) {
+    private func emitErrorPosts(atTestTime testTime: TestTime, error: Error) {
         postsProvider.posts = scheduler
             .createColdObservable([.error(testTime, error)])
             .asObservable()
@@ -232,7 +207,23 @@ class PostsViewModelTests: XCTestCase {
             .disposed(by: disposeBag)
     }
 
-    private func createPostsTestableObserver(forPosts posts: [Post]) -> TestableObserver<[Post]> {
+    private func createErrorTextObserver() -> TestableObserver<String> {
+        let errorText = scheduler.createObserver(String.self)
+        viewModel.errorText
+            .drive(errorText)
+            .disposed(by: disposeBag)
+        return errorText
+    }
+
+    private func createLoadingViewVisibleObserver() -> TestableObserver<Bool> {
+        let loadingViewVisible = scheduler.createObserver(Bool.self)
+        viewModel.loadingViewVisible
+            .drive(loadingViewVisible)
+            .disposed(by: disposeBag)
+        return loadingViewVisible
+    }
+
+    private func createPostsObserver(forPosts posts: [Post]) -> TestableObserver<[Post]> {
         let observer = scheduler.createObserver(Array<Post>.self)
         viewModel.posts
             .drive(observer)
