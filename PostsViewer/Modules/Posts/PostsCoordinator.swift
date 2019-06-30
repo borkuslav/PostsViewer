@@ -38,28 +38,18 @@ class PostsCoordinator: BaseCoordinator<PostsAction, Post> {
 
         viewController.coordinator = self
 
-        defer {
-            switch transitionType {
-            case .push(let animated):
-                navigationController.pushViewController(viewController, animated: animated)
-            case .presentModally:
-                let modalNavigationControoler = UINavigationController(rootViewController: viewController)
-                navigationController.present(modalNavigationControoler, animated: true)
-            default:
-                break
-            }
-        }
-
         let apiDataProvider = APIDataProviderImp()
         let databaseDataProvider = DatabaseDataProvider()
         let dataProvider = DataProvider(
             apiDataProvider: apiDataProvider,
             databaseDataProvider: databaseDataProvider)
 
+        var output: Observable<Post> = .never()
+        var viewModel: PostsViewModel!
+
         switch input {
         case .presentDetails:
-            let viewModel = PostsViewModel(postsProvider: dataProvider)
-            viewController.viewModel = viewModel
+            viewModel = PostsViewModel(postsProvider: dataProvider)
             viewModel.selectedPost
                 .asObservable()
                 .flatMap({ [weak self] post -> Observable<Void> in
@@ -70,19 +60,34 @@ class PostsCoordinator: BaseCoordinator<PostsAction, Post> {
                 }).subscribe()
                 .disposed(by: disposeBag)
 
-            return .never()
-
         case .pick(let user):
-            let viewModel = PostsViewModel(
+            viewModel = PostsViewModel(
                 postsProvider: dataProvider,
-                currentUser: BehaviorRelay<User?>(value: user))
-            viewController.viewModel = viewModel
-            return viewModel.selectedPost
+                currentUser: BehaviorRelay<User?>(value: user),
+                withCancelButton: true)
+            output = viewModel.selectedPost
                 .asObservable()
                 .do(onNext: { [weak self] _ in
                     self?.navigationController.dismiss(animated: true)
                 })
         }
+        viewController.viewModel = viewModel
+
+        viewModel.dismissView.drive(onNext: { [navigationController] _ in
+            navigationController.dismiss(animated: true)
+        }).disposed(by: disposeBag)
+
+        switch transitionType {
+        case .push(let animated):
+            navigationController.pushViewController(viewController, animated: animated)
+        case .presentModally:
+            let modalNavigationControoler = UINavigationController(rootViewController: viewController)
+            navigationController.present(modalNavigationControoler, animated: true)
+        default:
+            break
+        }
+
+        return output
     }
 
     private func pushPostDetails(post: Post) -> Observable<Void> {

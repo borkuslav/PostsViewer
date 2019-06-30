@@ -90,5 +90,17 @@ class PostsViewController: UIViewController, Storyboarded {
             .subscribe(onNext: { [tableView] indexPath in
                 tableView?.deselectRow(at: indexPath, animated: true)
             }).disposed(by: disposeBag)
+
+        viewModel.addCancelButton
+            .drive(onNext: { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+                self.navigationItem.leftBarButtonItem = cancelButton
+                cancelButton.rx.tap
+                    .bind(to: self.viewModel.cancel)
+                    .disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
     }
 }

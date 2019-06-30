@@ -24,6 +24,9 @@ protocol PostsViewModelInput {
 
     /// call to show posts filtered for a specific user
     var currentUser: BehaviorRelay<User?> { get }
+
+    /// call to hide modally presented view
+    var cancel: AnyObserver<Void> { get }
 }
 
 protocol PostsViewModelOutput {
@@ -39,6 +42,10 @@ protocol PostsViewModelOutput {
     var selectedPost: Driver<Post> { get }
 
     var title: Driver<String> { get }
+
+    var addCancelButton: Driver<Void> { get }
+
+    var dismissView: Driver<Void> { get }
 }
 
 protocol PostsViewModelType: PostsViewModelInput, PostsViewModelOutput {}
@@ -55,6 +62,8 @@ class PostsViewModel: PostsViewModelType {
 
     var currentUser: BehaviorRelay<User?>
 
+    var cancel: AnyObserver<Void>
+
     // MARK: - Outputs
 
     var loadingViewVisible: Driver<Bool>
@@ -69,11 +78,19 @@ class PostsViewModel: PostsViewModelType {
 
     var title: Driver<String>
 
+    var addCancelButton: Driver<Void> = .empty()
+
+    var dismissView: Driver<Void>
+
     // MARK: -
     private let disposeBag = DisposeBag()
     private let postsProvider: PostsProvider
 
-    init(postsProvider: PostsProvider, currentUser: BehaviorRelay<User?> = BehaviorRelay<User?>(value: nil)) {
+    init(
+        postsProvider: PostsProvider,
+        currentUser: BehaviorRelay<User?> = BehaviorRelay<User?>(value: nil),
+        withCancelButton: Bool = false) {
+
         self.postsProvider = postsProvider
         self.currentUser = currentUser
 
@@ -82,6 +99,15 @@ class PostsViewModel: PostsViewModelType {
 
         let _refreshPosts = PublishSubject<Void>()
         self.refreshPosts = _refreshPosts.asObserver()
+
+        if withCancelButton {
+            self.addCancelButton = .just(())
+        }
+
+        let _cancel = PublishSubject<Void>()
+        self.cancel = _cancel.asObserver()
+        self.dismissView = _cancel.asObservable()
+            .asDriver(onErrorDriveWith: .never())
 
         self.title = currentUser.asObservable()
             .unwrap()
