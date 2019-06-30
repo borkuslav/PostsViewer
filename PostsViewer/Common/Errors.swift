@@ -12,6 +12,7 @@ enum NetworkError: LocalizedError {
     case loadingResourceFailed(Int)
     case parsingResourceFailed
     case operationFailedPleaseRetry
+    case unexpectedResponse
 
     var errorDescription: String? {
         switch self {
@@ -20,6 +21,8 @@ enum NetworkError: LocalizedError {
         case .parsingResourceFailed:
             return "Parsing data failed!"
         case .operationFailedPleaseRetry:
+            return "Operation failed. Please try again."
+        case .unexpectedResponse:
             return "Operation failed. Please try again."
         }
     }

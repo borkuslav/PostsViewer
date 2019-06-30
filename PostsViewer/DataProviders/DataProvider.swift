@@ -57,9 +57,15 @@ extension DataProvider: DataProviderType {
     func getPostDetails(forPost post: Post) -> Observable<PostDetails> {
         let user = apiDataProvider
             .getUser(forUserId: post.userId)
+            .flatMap({ user -> Observable<User> in
+                if let user = user {
+                    return .just(user)
+                }
+                return .error(NetworkError.unexpectedResponse)
+            })
             .do(afterNext: { [weak self] user in
                 self?.databaseDataProvider.cacheUser(user)
-            }).catchError { [weak self] error -> Observable<User> in
+            }).catchError { [weak self] (error: Error ) -> Observable<User> in
                 guard let self = self else {
                     return .error(error)
                 }

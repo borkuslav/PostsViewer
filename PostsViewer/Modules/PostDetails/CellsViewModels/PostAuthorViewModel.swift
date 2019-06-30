@@ -14,17 +14,15 @@ protocol PostAuthorViewModelIntput {
     var showOtherPostsButtonPressed: AnyObserver<Void> { get }
 }
 
-
 protocol PostAuthorViewModelOutput {
     var showOtherPosts: Driver<Void> { get }
 }
 
-protocol PostAuthorViewModelType:  PostAuthorViewModelIntput, PostAuthorViewModelOutput {
+protocol PostAuthorViewModelType: PostAuthorViewModelIntput, PostAuthorViewModelOutput {
 
 }
 
 class PostAuthorViewModel {
-
 
     // MARK: - Inputs
 

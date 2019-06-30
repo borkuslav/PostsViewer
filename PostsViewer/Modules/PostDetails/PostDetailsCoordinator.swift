@@ -30,7 +30,7 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
 
         viewController.coordinator = self
 
-        let apiDataProvider = APIDataProviderImp()
+        let apiDataProvider = APIDataProvider()
         let databaseDataProvider = DatabaseDataProvider()
         let dataProvider = DataProvider(
             apiDataProvider: apiDataProvider,

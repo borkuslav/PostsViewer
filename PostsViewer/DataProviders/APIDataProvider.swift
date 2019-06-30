@@ -11,11 +11,11 @@ import RxSwift
 
 protocol APIDataProviderType {
     func getPosts(forUserId userId: Int?) -> Observable<[Post]>
-    func getUser(forUserId userId: Int) -> Observable<User>
+    func getUser(forUserId userId: Int) -> Observable<User?>
     func getComments(forPostId postId: Int) -> Observable<[Comment]>
 }
 
-final class APIDataProviderImp {
+final class APIDataProvider {
 
     private func getList<Model: Decodable>(url: URL) -> Observable<[Model]> {
         let urlRequest = URLRequest(url: url)
@@ -31,19 +31,9 @@ final class APIDataProviderImp {
                 return .error(NetworkError.loadingResourceFailed(response.statusCode))
             }            
     }
-
-    private func getSingle<Model: Decodable>(url: URL) -> Observable<Model> {
-        let list: Observable<[Model]> = getList(url: url)
-        return list.flatMap { list -> Observable<Model> in
-            if let result = list.first {
-                return .just(result)
-            }
-            return .error(NetworkError.parsingResourceFailed) // TODO: 
-        }
-    }
 }
 
-extension APIDataProviderImp: APIDataProviderType {
+extension APIDataProvider: APIDataProviderType {
 
     func getPosts(forUserId userId: Int?) -> Observable<[Post]> {
         if let userId = userId {
@@ -53,8 +43,11 @@ extension APIDataProviderImp: APIDataProviderType {
 
     }
 
-    func getUser(forUserId userId: Int) -> Observable<User> {
-        return getSingle(url: URL(string: "\(Constants.usersUrlString)?id=\(userId)")!)
+    func getUser(forUserId userId: Int) -> Observable<User?> {
+        return getList(url: URL(string: "\(Constants.usersUrlString)?id=\(userId)")!)
+            .flatMap({ (users: [User]) -> Observable<User?> in
+                return .just(users.first)
+            })
     }
 
     func getComments(forPostId postId: Int) -> Observable<[Comment]> {

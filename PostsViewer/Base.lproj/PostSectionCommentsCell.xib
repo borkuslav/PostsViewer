@@ -18,8 +18,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="59t-wG-KkB">
-                        <rect key="frame" x="356" y="8" width="42" height="27.5"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="59t-wG-KkB">
+                        <rect key="frame" x="16" y="8" width="382" height="27.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -28,6 +28,7 @@
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="59t-wG-KkB" secondAttribute="bottom" constant="8" id="W39-Mw-C7u"/>
                     <constraint firstItem="59t-wG-KkB" firstAttribute="top" secondItem="rdd-3a-aDc" secondAttribute="top" constant="8" id="kkW-M9-8fy"/>
+                    <constraint firstItem="59t-wG-KkB" firstAttribute="leading" relation="lessThanOrEqual" secondItem="rdd-3a-aDc" secondAttribute="leading" constant="16" id="lrB-o4-yV9"/>
                     <constraint firstAttribute="trailing" secondItem="59t-wG-KkB" secondAttribute="trailing" constant="16" id="uIl-3m-Esa"/>
                 </constraints>
             </tableViewCellContentView>

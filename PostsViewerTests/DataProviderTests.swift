@@ -153,8 +153,8 @@ class FakeAPIDataProvider: APIDataProviderType {
         return posts
     }
 
-    var user: Observable<User>!
-    func getUser(forUserId userId: Int) -> Observable<User> {
+    var user: Observable<User?>!
+    func getUser(forUserId userId: Int) -> Observable<User?> {
         return user
     }
 

@@ -291,5 +291,3 @@ extension PostCommentsViewModel: Equatable {
         return lhs.comments.map { $0.id } == rhs.comments.map { $0.id }
     }
 }
-
-

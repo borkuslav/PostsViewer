@@ -38,10 +38,16 @@ class BaseCoordinator<InputType, ResultType> {
     private var childCoordinators = NSHashTable<AnyObject>.weakObjects()
 
     private func store<InputType, ResultType>(coordinator: BaseCoordinator<InputType, ResultType>) {
-        childCoordinators.add(CoordinatorBox<InputType, ResultType>(item: coordinator, identifier: coordinator.identifier))
+        childCoordinators.add(
+            CoordinatorBox<InputType, ResultType>(
+                item: coordinator,
+                identifier: coordinator.identifier)
+        )
     }
 
-    private func getChildCoordinator<InputType, ResultType>(identifier: UUID) -> BaseCoordinator<InputType, ResultType>? {
+    private func getChildCoordinator<InputType, ResultType>(
+        identifier: UUID) -> BaseCoordinator<InputType, ResultType>? {
+        
         var childCoordinator: BaseCoordinator<InputType, ResultType>?
         let enumerator = self.childCoordinators.objectEnumerator()
         while let child = enumerator.nextObject() {
