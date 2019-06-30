@@ -35,61 +35,63 @@ class PostDetailsViewModelTests: XCTestCase {
         viewModel = PostDetailsViewModel(postsDetailsProvider: dataProvider, post: post)
     }
 
-    func test_ShowPostDetails_OnSuccess_WithCorrectData_EmitPostDetails() {
+    func test_ViewDidLoad_ShowPostDetails_OnSuccess_WithCorrectData() {
 
         let post: Post = TestDataParser().loadAndParsePosts()![0]
-        let postDetailsModel = prepareDataProviderToSuccess(forPost: post, emitPostDetailsAtTestTime: 10)
-        let expectedResult: [PostSectionViewModelType] = [
-            .author(PostAuthorViewModel(user: postDetailsModel.user)),
-            .content(PostContentViewModel(post: post)),
-            .comments(PostCommentsViewModel(comments: postDetailsModel.comments))
-        ]
-
-        let postDetails = scheduler.createObserver(Array<PostSectionViewModelType>.self)
-        viewModel.postDetails
-            .drive(postDetails)
-            .disposed(by: disposeBag)
-
-        let errorText = scheduler.createObserver(String.self)
-        viewModel.errorText
-            .drive(errorText)
-            .disposed(by: disposeBag)
-
-        let viewDidLoad = scheduler.createColdObservable([.next(0, ())])
-        viewDidLoad.asObservable()
-            .bind(to: viewModel.viewDidLoad)
-            .disposed(by: disposeBag)
+        let postDetailsModel = emitNextPostDetailsCorrect(forPost: post, atTestTime: 10)
+        let expectedResult = wrapToSectionsViewModels(post: post, postDetailsModel: postDetailsModel)
 
         viewModel.currentPost.accept(post)
+
+        let postDetails = createPostDetailsObserver()
+        let loadingViewVisible = createLoadingViewVisibleObserver()
+        let errorText = createErrorTextObserver()
+
+        emitViewDidLoad(atTestTime: 0)
 
         scheduler.start()
 
         XCTAssertEqual(postDetails.events, [.next(10, expectedResult)])
-        XCTAssertEqual(errorText.events, [
-            .next(0, ""),
-            .next(10, "")
+        XCTAssertEqual(errorText.events, [.next(10, "")])
+        XCTAssertEqual(loadingViewVisible.events, [
+            .next(0, true),
+            .next(10, false)
         ])
+    }
+
+    func test_Reload_ShowPostDetails_OnSuccess_WithCorrectData() {
+
+        let post: Post = TestDataParser().loadAndParsePosts()![0]
+        let postDetailsModel = emitNextPostDetailsCorrect(forPost: post, atTestTime: 10)
+        let expectedResult = wrapToSectionsViewModels(post: post, postDetailsModel: postDetailsModel)
+
+        viewModel.currentPost.accept(post)
+
+        let postDetails = createPostDetailsObserver()
+        let loadingViewVisible = createLoadingViewVisibleObserver()
+        let errorText = createErrorTextObserver()
+
+        emitReload(atTestTime: 10)
+
+        scheduler.start()
+
+        XCTAssertEqual(postDetails.events, [.next(20, expectedResult)])
+        XCTAssertEqual(errorText.events, [
+            .next(10, ""),
+            .next(20, "")
+        ])
+        XCTAssertEqual(loadingViewVisible.events, [.next(20, false)])
     }
 
     func test_ShowPostDetails_OnSuccess_WithIncorrectUser() {
 
         let post: Post = TestDataParser().loadAndParsePosts()![0]
-        _ = self.prepareDataProviderToSuccessWithIncorrectUser(forPost: post, emitPostDetailsAtTestTime: 10)
+        _ = self.emitNextPostDetailsWithIncorrectUser(forPost: post, atTestTime: 10)
 
-        let postDetails = scheduler.createObserver(Array<PostSectionViewModelType>.self)
-        viewModel.postDetails
-            .drive(postDetails)
-            .disposed(by: disposeBag)
+        let postDetails = createPostDetailsObserver()
+        let errorText = createErrorTextObserver()
 
-        let errorText = scheduler.createObserver(String.self)
-        viewModel.errorText
-            .drive(errorText)
-            .disposed(by: disposeBag)
-
-        let viewDidLoad = scheduler.createColdObservable([.next(0, ())])
-        viewDidLoad.asObservable()
-            .bind(to: viewModel.viewDidLoad)
-            .disposed(by: disposeBag)
+        emitViewDidLoad(atTestTime: 0)
 
         viewModel.currentPost.accept(post)
 
@@ -97,12 +99,10 @@ class PostDetailsViewModelTests: XCTestCase {
 
         XCTAssertEqual(postDetails.events, [.next(10, [])])
         XCTAssertEqual(errorText.events, [
-            .next(0, ""),
             .next(10, "Couldn't load data. \nPlease pull to refresh")
         ])
     }
 
-    // TODO: extract one code for test_ShowPostDetails_OnDetailsLoadingFail & test_ShowPostDetails_OnSuccess_WithIncorrectUser
     func test_ShowPostDetails_OnDetailsLoadingFail() {
 
         let post: Post = TestDataParser().loadAndParsePosts()![0]
@@ -110,20 +110,10 @@ class PostDetailsViewModelTests: XCTestCase {
             .createColdObservable([.error(20, NetworkError.operationFailedPleaseRetry)])
             .asObservable()
 
-        let postDetails = scheduler.createObserver(Array<PostSectionViewModelType>.self)
-        viewModel.postDetails
-            .drive(postDetails)
-            .disposed(by: disposeBag)
+        let postDetails = createPostDetailsObserver()
+        let errorText = createErrorTextObserver()
 
-        let errorText = scheduler.createObserver(String.self)
-        viewModel.errorText
-            .drive(errorText)
-            .disposed(by: disposeBag)
-
-        let viewDidLoad = scheduler.createColdObservable([.next(0, ())])
-        viewDidLoad.asObservable()
-            .bind(to: viewModel.viewDidLoad)
-            .disposed(by: disposeBag)
+        emitViewDidLoad(atTestTime: 0)
 
         viewModel.currentPost.accept(post)
 
@@ -131,51 +121,96 @@ class PostDetailsViewModelTests: XCTestCase {
 
         XCTAssertEqual(postDetails.events, [.next(20, [])])
         XCTAssertEqual(errorText.events, [
-            .next(0, ""),
             .next(20, "Couldn't load data. \nPlease pull to refresh")
         ])
     }
 
-    private func prepareDataProviderToSuccess(
+    private func wrapToSectionsViewModels(post: Post, postDetailsModel: PostDetails) -> [PostSectionViewModelType] {
+        return [
+            .author(PostAuthorViewModel(user: postDetailsModel.user)),
+            .content(PostContentViewModel(post: post)),
+            .comments(PostCommentsViewModel(comments: postDetailsModel.comments))
+        ]
+    }
+
+    private func createPostDetailsObserver() -> TestableObserver<[PostSectionViewModelType]> {
+        let postDetails = scheduler.createObserver(Array<PostSectionViewModelType>.self)
+        viewModel.postDetails
+            .drive(postDetails)
+            .disposed(by: disposeBag)
+        return postDetails
+    }
+
+    private func createLoadingViewVisibleObserver() -> TestableObserver<Bool> {
+        let loadingViewVisible = scheduler.createObserver(Bool.self)
+        viewModel.loadingViewVisible
+            .drive(loadingViewVisible)
+            .disposed(by: disposeBag)
+        return loadingViewVisible
+    }
+
+    private func createErrorTextObserver() -> TestableObserver<String> {
+        let errorText = scheduler.createObserver(String.self)
+        viewModel.errorText
+            .drive(errorText)
+            .disposed(by: disposeBag)
+        return errorText
+    }
+
+    private func emitViewDidLoad(atTestTime time: TestTime) {
+        scheduler.createColdObservable([.next(time, ())])
+            .asObservable()
+            .bind(to: viewModel.viewDidLoad)
+            .disposed(by: disposeBag)
+    }
+
+    private func emitReload(atTestTime time: TestTime) {
+        scheduler.createColdObservable([.next(time, ())])
+            .asObservable()
+            .bind(to: viewModel.reload)
+            .disposed(by: disposeBag)
+    }
+
+    private func emitNextPostDetailsCorrect(
         forPost post: Post,
-        emitPostDetailsAtTestTime testTime: TestTime) -> PostDetails {
+        atTestTime testTime: TestTime) -> PostDetails {
 
         let user = getCorrectUser(forPost: post)
         let comments = getCorrectComments(forPost: post)
-        return prepareDataProviderToSuccess(
+        return emitNextPostDetails(
             forPost: post,
             user: user,
             comments: comments,
             emitPostDetailsAtTestTime: testTime)
     }
 
-    private func prepareDataProviderToSuccessWithIncorrectUser(
+    private func emitNextPostDetailsWithIncorrectUser(
         forPost post: Post,
-        emitPostDetailsAtTestTime testTime: TestTime) -> PostDetails {
+        atTestTime testTime: TestTime) -> PostDetails {
 
         let user = getIncorrectUser(forPost: post)
         let comments = getCorrectComments(forPost: post)
-        return prepareDataProviderToSuccess(
+        return emitNextPostDetails(
             forPost: post,
             user: user,
             comments: comments,
             emitPostDetailsAtTestTime: testTime)
     }
 
-    private func prepareDataProviderToSuccessWithIncorrectComments(
+    private func emitNextPostDetailsWithIncorrectComments(
         forPost post: Post,
-        emitPostDetailsAtTestTime testTime: TestTime) -> PostDetails {
+        atTestTime testTime: TestTime) -> PostDetails {
 
         let user = getCorrectUser(forPost: post)
         let comments = getIncorrectComments(forPost: post)
-        return prepareDataProviderToSuccess(
+        return emitNextPostDetails(
             forPost: post,
             user: user,
             comments: comments,
             emitPostDetailsAtTestTime: testTime)
     }
 
-    private func prepareDataProviderToSuccess(
+    private func emitNextPostDetails(
         forPost post: Post,
         user: User,
         comments: [Comment],

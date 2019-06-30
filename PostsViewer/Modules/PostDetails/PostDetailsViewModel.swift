@@ -96,15 +96,13 @@ class PostDetailsViewModel: PostDetailsViewModelType {
         ).asDriver(onErrorDriveWith: .never())
 
         self.errorText = Observable.merge(
-            _reload.asObservable().map { _ in ""},
-            _viewDidLoad.asObservable().map { _ in ""},
+            _reload.asObservable().map { _ in ""},            
             _postDetails.errors().map { _ in PostDetailsViewModel.errorMessage },
             postSections.errors().map { _ in PostDetailsViewModel.errorMessage },
             postSections.elements().map { _ in ""}
         ).asDriver(onErrorDriveWith: .never())
 
         self.loadingViewVisible = Observable.merge(
-            _reload.asObservable().map { _ in true },
             _viewDidLoad.asObservable().map { _ in true },
             _postDetails.errors().map { _ in false },
             postSections.errors().map { _ in false },
