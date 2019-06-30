@@ -22,6 +22,10 @@ class PostDetailsViewController: UIViewController, Storyboarded {
     private lazy var loadingView = LoadingView(parentView: view)
     private let refreshControl = UIRefreshControl()
 
+    deinit{
+        debugPrint("## deinit PostDetailsViewController")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -70,7 +74,7 @@ class PostDetailsViewController: UIViewController, Storyboarded {
                 return refreshControl.isRefreshing
             }.filter { $0 == true }
             .map { _ in return () }
-            .bind(to: viewModel.reload)
+            .bind(to: viewModel.refresh)
             .disposed(by: disposeBag)
 
         viewModel.hideRefreshIndicator

@@ -71,7 +71,7 @@ class PostDetailsViewModelTests: XCTestCase {
         let loadingViewVisible = createLoadingViewVisibleObserver()
         let errorText = createErrorTextObserver()
 
-        emitReload(atTestTime: 10)
+        emitRefresh(atTestTime: 10)
 
         scheduler.start()
 
@@ -164,10 +164,10 @@ class PostDetailsViewModelTests: XCTestCase {
             .disposed(by: disposeBag)
     }
 
-    private func emitReload(atTestTime time: TestTime) {
+    private func emitRefresh(atTestTime time: TestTime) {
         scheduler.createColdObservable([.next(time, ())])
             .asObservable()
-            .bind(to: viewModel.reload)
+            .bind(to: viewModel.refresh)
             .disposed(by: disposeBag)
     }
 

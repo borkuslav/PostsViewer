@@ -9,8 +9,14 @@
 import Foundation
 import UIKit
 import RxSwift
+import RxCocoa
 
-class PostsCoordinator: BaseCoordinator<Void, Void> {
+enum PostsAction {
+    case pick(User)
+    case presentDetails
+}
+
+class PostsCoordinator: BaseCoordinator<PostsAction, Post> {
 
     private let navigationController: UINavigationController
 
@@ -18,7 +24,13 @@ class PostsCoordinator: BaseCoordinator<Void, Void> {
         self.navigationController = navigationController
     }
 
-    override func start(withInput input: Void, andTransition transitionType: TransitionType) -> Observable<Void> {
+    deinit {
+        debugPrint("## deinit PostsCoordinator")
+    }
+
+    override func start(
+        withInput input: PostsAction,
+        andTransition transitionType: TransitionType) -> Observable<Post> {
 
         guard let viewController = PostsViewController.initFromStoryboard(name: "Posts") else {
             return Observable.never()
@@ -26,32 +38,51 @@ class PostsCoordinator: BaseCoordinator<Void, Void> {
 
         viewController.coordinator = self
 
+        defer {
+            switch transitionType {
+            case .push(let animated):
+                navigationController.pushViewController(viewController, animated: animated)
+            case .presentModally:
+                let modalNavigationControoler = UINavigationController(rootViewController: viewController)
+                navigationController.present(modalNavigationControoler, animated: true)
+            default:
+                break
+            }
+        }
+
         let apiDataProvider = APIDataProviderImp()
         let databaseDataProvider = DatabaseDataProvider()
         let dataProvider = DataProvider(
             apiDataProvider: apiDataProvider,
             databaseDataProvider: databaseDataProvider)
 
-        let viewModel = PostsViewModel(postsProvider: dataProvider)
-        viewController.viewModel = viewModel
-        switch transitionType {
-        case .push(let animated):
-            navigationController.pushViewController(viewController, animated: animated)
-        default:
-            break
+        switch input {
+        case .presentDetails:
+            let viewModel = PostsViewModel(postsProvider: dataProvider)
+            viewController.viewModel = viewModel
+            viewModel.selectedPost
+                .asObservable()
+                .flatMap({ [weak self] post -> Observable<Void> in
+                    guard let self = self else {
+                        return .never()
+                    }
+                    return self.pushPostDetails(post: post)
+                }).subscribe()
+                .disposed(by: disposeBag)
+
+            return .never()
+
+        case .pick(let user):
+            let viewModel = PostsViewModel(
+                postsProvider: dataProvider,
+                currentUser: BehaviorRelay<User?>(value: user))
+            viewController.viewModel = viewModel
+            return viewModel.selectedPost
+                .asObservable()
+                .do(onNext: { [weak self] _ in
+                    self?.navigationController.dismiss(animated: true)
+                })
         }
-
-        viewModel.selectedPost
-            .asObservable()
-            .flatMap({ [weak self] post -> Observable<Void> in
-                guard let self = self else {
-                    return .never()
-                }
-                return self.pushPostDetails(post: post)
-            }).subscribe()
-            .disposed(by: disposeBag)
-
-        return Observable.never()
     }
 
     private func pushPostDetails(post: Post) -> Observable<Void> {

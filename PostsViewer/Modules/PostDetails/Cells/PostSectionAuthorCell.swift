@@ -9,6 +9,7 @@
 import Foundation
 
 import UIKit
+import RxSwift
 
 class PostSectionAuthorCell: UITableViewCell {
 
@@ -19,5 +20,19 @@ class PostSectionAuthorCell: UITableViewCell {
     func setup(viewModel: PostAuthorViewModel) {
         username.text = viewModel.user.username
         name.text = "(\(viewModel.user.name))"
+
+        self.setupBindings(viewModel: viewModel)
     }
+
+    private func setupBindings(viewModel: PostAuthorViewModel) {
+        seeOtherPosts.rx.tap
+            .bind(to: viewModel.showOtherPostsButtonPressed)
+            .disposed(by: disposeBag)
+    }
+
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
+    }
+
+    private var disposeBag = DisposeBag()
 }

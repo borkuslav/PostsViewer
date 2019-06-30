@@ -24,7 +24,11 @@ class RootCoordinator: BaseCoordinator<Void, Void> {
         window.makeKeyAndVisible()
 
         let postsCoordinator = PostsCoordinator(navigationController: navigationController)
-        return coordinate(to: postsCoordinator, withInput: (), andTransition: .push(animated: false))
+        return coordinate(
+            to: postsCoordinator,
+            withInput: PostsAction.presentDetails,
+            andTransition: .push(animated: false)
+        ).map { _ in () }
     }
 
 }

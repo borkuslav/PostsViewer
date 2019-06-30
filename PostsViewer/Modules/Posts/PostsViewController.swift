@@ -32,6 +32,10 @@ class PostsViewController: UIViewController, Storyboarded {
         self.viewModel.viewDidLoad.onNext(())
     }
 
+    deinit {
+        debugPrint("## deinit PostsViewController")
+    }
+
     private func setupUI() {
         title = "Posts"
         view.backgroundColor = .white
@@ -42,6 +46,11 @@ class PostsViewController: UIViewController, Storyboarded {
     }
 
     private func setupBindings() {
+
+        viewModel.title
+            .drive(onNext: { [weak self] title in
+                self?.title = title
+            }).disposed(by: disposeBag)
 
         refreshControl.rx.controlEvent(.valueChanged)
             .map { [unowned refreshControl] _ in

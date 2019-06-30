@@ -16,6 +16,8 @@ protocol PostDetailsViewModelInput {
 
     var viewDidLoad: AnyObserver<Void> { get }
 
+    var refresh: AnyObserver<Void> { get }
+
     var reload: AnyObserver<Void> { get }
 }
 
@@ -28,6 +30,8 @@ protocol PostDetailsViewModelOutput {
     var loadingViewVisible: Driver<Bool> { get }
 
     var hideRefreshIndicator: Driver<Void> { get }
+
+    var showOtherUserPosts: Driver<User> { get }
 }
 
 protocol PostDetailsViewModelType: PostDetailsViewModelInput, PostDetailsViewModelOutput {
@@ -42,6 +46,8 @@ class PostDetailsViewModel: PostDetailsViewModelType {
 
     var viewDidLoad: AnyObserver<Void>
 
+    var refresh: AnyObserver<Void>
+
     var reload: AnyObserver<Void>
 
     // MARK: - Outputs
@@ -54,6 +60,8 @@ class PostDetailsViewModel: PostDetailsViewModelType {
 
     var hideRefreshIndicator: Driver<Void>
 
+    var showOtherUserPosts: Driver<User>
+
     // MARK: -
 
     init(postsDetailsProvider: PostsDetailsProvider, post: BehaviorRelay<Post>) {
@@ -64,30 +72,48 @@ class PostDetailsViewModel: PostDetailsViewModelType {
         let _viewDidLoad = PublishSubject<Void>()
         self.viewDidLoad = _viewDidLoad.asObserver()
 
+        let _refresh = PublishSubject<Void>()
+        self.refresh = _refresh.asObserver()
+
         let _reload = PublishSubject<Void>()
         self.reload = _reload.asObserver()
 
+        let _showOtherPosts = PublishSubject<Void>()
+
         let _postDetails = Observable.merge(
-            _reload.asObservable(),
-            _viewDidLoad.asObservable()
+            _refresh.asObservable(),
+            _viewDidLoad.asObservable(),
+            _reload.asObservable()
         ).flatMap { _ in
             return postsDetailsProvider
                 .getPostDetails(forPost: post.value)
                 .materialize()
         }.share()
 
+        self.showOtherUserPosts = _showOtherPosts
+            .withLatestFrom(_postDetails.elements())
+            .map { $0.user}
+            .asDriver(onErrorDriveWith: .never())
+
         let postSections = _postDetails.elements()
-            .flatMap({ postDetails -> Observable<[PostSectionViewModelType]> in
+            .flatMap({ [disposeBag] postDetails -> Observable<[PostSectionViewModelType]> in
                 if let validatedPostDetails = PostDetailsValidator().validate(postDetails) {
+                    let authorViewModel = PostAuthorViewModel(user: validatedPostDetails.user)
+                    authorViewModel.showOtherPosts
+                        .asObservable()
+                        .observeOn(MainScheduler.instance)
+                        .bind(to: _showOtherPosts)
+                        .disposed(by: disposeBag)
                     return .just([
-                        .author(PostAuthorViewModel(user: validatedPostDetails.user)),
+                        .author(authorViewModel),
                         .content(PostContentViewModel(post: validatedPostDetails.post)),
                         .comments(PostCommentsViewModel(comments: validatedPostDetails.comments))
                     ])
                 } else {
                     return .error(PostDetailsError.receivedInvalidPostDetails)
                 }
-            }).materialize()
+            }).share()
+            .materialize()
 
         self.postDetails = Observable.merge(
             _postDetails.errors().flatMap { _ -> Observable<[PostSectionViewModelType]> in .just([]) },
@@ -96,7 +122,7 @@ class PostDetailsViewModel: PostDetailsViewModelType {
         ).asDriver(onErrorDriveWith: .never())
 
         self.errorText = Observable.merge(
-            _reload.asObservable().map { _ in ""},            
+            _refresh.asObservable().map { _ in ""},            
             _postDetails.errors().map { _ in PostDetailsViewModel.errorMessage },
             postSections.errors().map { _ in PostDetailsViewModel.errorMessage },
             postSections.elements().map { _ in ""}
@@ -104,6 +130,7 @@ class PostDetailsViewModel: PostDetailsViewModelType {
 
         self.loadingViewVisible = Observable.merge(
             _viewDidLoad.asObservable().map { _ in true },
+            _reload.asObservable().map { _ in true },
             _postDetails.errors().map { _ in false },
             postSections.errors().map { _ in false },
             postSections.elements().map { _ in false }
@@ -120,6 +147,9 @@ class PostDetailsViewModel: PostDetailsViewModelType {
     private let disposeBag = DisposeBag()
     private static let errorMessage = "Couldn't load data. \nPlease pull to refresh"
 
+    deinit {
+        debugPrint("## deinit PostDetailsViewModel")
+    }
 }
 
 private struct PostDetailsValidator {

@@ -21,6 +21,9 @@ protocol PostsViewModelInput {
 
     /// call on tapping on post
     var selectPost: AnyObserver<Post> { get }
+
+    /// call to show posts filtered for a specific user
+    var currentUser: BehaviorRelay<User?> { get }
 }
 
 protocol PostsViewModelOutput {
@@ -34,6 +37,8 @@ protocol PostsViewModelOutput {
     var posts: Driver<[Post]> { get }
 
     var selectedPost: Driver<Post> { get }
+
+    var title: Driver<String> { get }
 }
 
 protocol PostsViewModelType: PostsViewModelInput, PostsViewModelOutput {}
@@ -48,6 +53,8 @@ class PostsViewModel: PostsViewModelType {
 
     var selectPost: AnyObserver<Post>
 
+    var currentUser: BehaviorRelay<User?>
+
     // MARK: - Outputs
 
     var loadingViewVisible: Driver<Bool>
@@ -60,12 +67,15 @@ class PostsViewModel: PostsViewModelType {
 
     var selectedPost: Driver<Post>
 
+    var title: Driver<String>
+
     // MARK: -
     private let disposeBag = DisposeBag()
     private let postsProvider: PostsProvider
 
-    init(postsProvider: PostsProvider) {
+    init(postsProvider: PostsProvider, currentUser: BehaviorRelay<User?> = BehaviorRelay<User?>(value: nil)) {
         self.postsProvider = postsProvider
+        self.currentUser = currentUser
 
         let _viewDidLoad = PublishSubject<Void>()
         self.viewDidLoad = _viewDidLoad.asObserver()
@@ -73,12 +83,17 @@ class PostsViewModel: PostsViewModelType {
         let _refreshPosts = PublishSubject<Void>()
         self.refreshPosts = _refreshPosts.asObserver()
 
+        self.title = currentUser.asObservable()
+            .unwrap()
+            .map { "\($0.name)'s Posts"}
+            .asDriver(onErrorJustReturn: "")
+
         let _posts = Observable.merge(
             _viewDidLoad.asObservable(),
             _refreshPosts.asObservable()
         ).flatMap({ _ in
             return postsProvider
-                .getPosts(forUserId: nil)
+                .getPosts(forUserId: currentUser.value?.id)
                 .materialize()
         }).share()
 
@@ -110,6 +125,6 @@ class PostsViewModel: PostsViewModelType {
     }
 
     deinit {
-        debugPrint("## PostsViewModel")
+        debugPrint("## deinit PostsViewModel")
     }
 }

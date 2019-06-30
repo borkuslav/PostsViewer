@@ -15,7 +15,7 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
     private let navigationController: UINavigationController
 
     deinit {
-        debugPrint("## PostsDetailsCoordinator")
+        debugPrint("## deinit PostsDetailsCoordinator")
     }
 
     init(navigationController: UINavigationController) {
@@ -42,9 +42,23 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
             post: BehaviorRelay<Post>(value: input)
         )
         viewController.viewModel = postDetailsViewModel
-        // TODO: bind show other posts of that autor
-        // TODO: bind show user profile
-        // TODO: bind show comments
+
+        postDetailsViewModel.showOtherUserPosts.asObservable()
+            .flatMap { [weak self] userId -> Observable<Post> in
+                guard let self = self else {
+                    return .never()
+                }
+
+                let postsCoordinator = PostsCoordinator(navigationController: self.navigationController)
+                return self.coordinate(
+                    to: postsCoordinator,
+                    withInput: PostsAction.pick(userId),
+                    andTransition: .presentModally)
+            }.asDriver(onErrorDriveWith: .never())
+            .do(afterNext: { _ in
+                postDetailsViewModel.reload.onNext(())
+            }).drive(postDetailsViewModel.currentPost)
+            .disposed(by: disposeBag)
 
         navigationController.pushViewController(viewController, animated: true)
 
