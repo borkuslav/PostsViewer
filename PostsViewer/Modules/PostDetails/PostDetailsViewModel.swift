@@ -11,7 +11,12 @@ import RxSwift
 import RxCocoa
 
 protocol PostDetailsViewModelInput {
-    var showPostsDetails: AnyObserver<Post> { get }
+
+    var currentPost: BehaviorRelay<Post> { get }
+
+    var viewDidLoad: AnyObserver<Void> { get }
+
+    var reload: AnyObserver<Void> { get }
 }
 
 protocol PostDetailsViewModelOutput {
@@ -21,10 +26,11 @@ protocol PostDetailsViewModelOutput {
     var errorText: Driver<String> { get }
 
     var loadingViewVisible: Driver<Bool> { get }
+
+    var hideRefreshIndicator: Driver<Void> { get }
 }
 
 protocol PostDetailsViewModelType: PostDetailsViewModelInput, PostDetailsViewModelOutput {
-
 
 }
 
@@ -32,7 +38,11 @@ class PostDetailsViewModel: PostDetailsViewModelType {
 
     // MARK: - Inputs
 
-    var showPostsDetails: AnyObserver<Post>
+    var currentPost: BehaviorRelay<Post>
+
+    var viewDidLoad: AnyObserver<Void>
+
+    var reload: AnyObserver<Void>
 
     // MARK: - Outputs
 
@@ -42,28 +52,32 @@ class PostDetailsViewModel: PostDetailsViewModelType {
 
     var loadingViewVisible: Driver<Bool>
 
+    var hideRefreshIndicator: Driver<Void>
+
     // MARK: -
 
-    init(postsDetailsProvider: PostsDetailsProvider) {
+    init(postsDetailsProvider: PostsDetailsProvider, post: BehaviorRelay<Post>) {
+
         self.postsDetailsProvider = postsDetailsProvider
+        self.currentPost = post
 
-        let _showPostsDetails = PublishSubject<Post>()
-        self.showPostsDetails = _showPostsDetails.asObserver()
+        let _viewDidLoad = PublishSubject<Void>()
+        self.viewDidLoad = _viewDidLoad.asObserver()
 
-        let _postDetails = _showPostsDetails.asObservable()
-            .flatMap { post in
-                return postsDetailsProvider
-                    .getPostDetails(forPost: post)
-                    .materialize()
-            }.share()
+        let _reload = PublishSubject<Void>()
+        self.reload = _reload.asObserver()
 
-        // TODO: check if this is need
-        _postDetails.replay(1)
-            .connect()
-            .disposed(by: disposeBag)
+        let _postDetails = Observable.merge(
+            _reload.asObservable(),
+            _viewDidLoad.asObservable()
+        ).flatMap { _ in
+            return postsDetailsProvider
+                .getPostDetails(forPost: post.value)
+                .materialize()
+        }.share()
 
         let postSections = _postDetails.elements()
-            .flatMap({ postDetails -> Observable<[PostSectionViewModelType]>in                
+            .flatMap({ postDetails -> Observable<[PostSectionViewModelType]> in
                 if let validatedPostDetails = PostDetailsValidator().validate(postDetails) {
                     return .just([
                         .author(PostAuthorViewModel(user: validatedPostDetails.user)),
@@ -82,24 +96,26 @@ class PostDetailsViewModel: PostDetailsViewModelType {
         ).asDriver(onErrorDriveWith: .never())
 
         self.errorText = Observable.merge(
+            _reload.asObservable().map { _ in ""},
+            _viewDidLoad.asObservable().map { _ in ""},
             _postDetails.errors().map { _ in PostDetailsViewModel.errorMessage },
             postSections.errors().map { _ in PostDetailsViewModel.errorMessage },
-            postSections.elements().map { _ in ""},
-            _showPostsDetails.asObservable().map { _ in ""}
+            postSections.elements().map { _ in ""}
         ).asDriver(onErrorDriveWith: .never())
 
-        let _loadingViewVisible = ReplaySubject<Bool>.create(bufferSize: 1)
-        self.loadingViewVisible = _loadingViewVisible
-            .asObservable()
-            .asDriver(onErrorDriveWith: .never())        
-        _showPostsDetails.asObservable()
-            .map { _ in true }
-            .bind(to: _loadingViewVisible)
-            .disposed(by: disposeBag)
-        self.postDetails.map { _ in false }
-            .drive(_loadingViewVisible)
-        .disposed(by: disposeBag)
+        self.loadingViewVisible = Observable.merge(
+            _reload.asObservable().map { _ in true },
+            _viewDidLoad.asObservable().map { _ in true },
+            _postDetails.errors().map { _ in false },
+            postSections.errors().map { _ in false },
+            postSections.elements().map { _ in false }
+        ).asDriver(onErrorDriveWith: .never())
 
+        self.hideRefreshIndicator = Observable.merge(
+            _postDetails.errors().map { _ in () },
+            postSections.errors().map { _ in () },
+            postSections.elements().map { _ in () }
+        ).asDriver(onErrorDriveWith: .never())
     }
 
     private let postsDetailsProvider: PostsDetailsProvider

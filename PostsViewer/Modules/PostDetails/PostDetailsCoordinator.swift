@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
 
@@ -33,17 +34,19 @@ class PostDetailsCoordinator: BaseCoordinator<Post, Void> {
         let databaseDataProvider = DatabaseDataProvider()
         let dataProvider = DataProvider(
             apiDataProvider: apiDataProvider,
-            databaseDataProvider: databaseDataProvider)
+            databaseDataProvider: databaseDataProvider
+        )
 
-        let postDetailsViewModel = PostDetailsViewModel(postsDetailsProvider: dataProvider)
+        let postDetailsViewModel = PostDetailsViewModel(
+            postsDetailsProvider: dataProvider,
+            post: BehaviorRelay<Post>(value: input)
+        )
         viewController.viewModel = postDetailsViewModel
         // TODO: bind show other posts of that autor
         // TODO: bind show user profile
         // TODO: bind show comments
 
         navigationController.pushViewController(viewController, animated: true)
-
-        postDetailsViewModel.showPostsDetails.onNext(input)
 
         return .never()
     }

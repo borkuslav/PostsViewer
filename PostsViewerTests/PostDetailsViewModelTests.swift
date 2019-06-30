@@ -31,7 +31,8 @@ class PostDetailsViewModelTests: XCTestCase {
         disposeBag = DisposeBag()
 
         dataProvider = PostDetailsProviderFake()
-        viewModel = PostDetailsViewModel(postsDetailsProvider: dataProvider)
+        let post = BehaviorRelay<Post>(value: TestDataParser().loadAndParsePosts()![0])
+        viewModel = PostDetailsViewModel(postsDetailsProvider: dataProvider, post: post)
     }
 
     func test_ShowPostDetails_OnSuccess_WithCorrectData_EmitPostDetails() {
@@ -54,9 +55,13 @@ class PostDetailsViewModelTests: XCTestCase {
             .drive(errorText)
             .disposed(by: disposeBag)
 
-        scheduler.createColdObservable([.next(0, post)])
-            .bind(to: viewModel.showPostsDetails)
+        let viewDidLoad = scheduler.createColdObservable([.next(0, ())])
+        viewDidLoad.asObservable()
+            .bind(to: viewModel.viewDidLoad)
             .disposed(by: disposeBag)
+
+        viewModel.currentPost.accept(post)
+
         scheduler.start()
 
         XCTAssertEqual(postDetails.events, [.next(10, expectedResult)])
@@ -81,9 +86,13 @@ class PostDetailsViewModelTests: XCTestCase {
             .drive(errorText)
             .disposed(by: disposeBag)
 
-        scheduler.createColdObservable([.next(0, post)])
-            .bind(to: viewModel.showPostsDetails)
+        let viewDidLoad = scheduler.createColdObservable([.next(0, ())])
+        viewDidLoad.asObservable()
+            .bind(to: viewModel.viewDidLoad)
             .disposed(by: disposeBag)
+
+        viewModel.currentPost.accept(post)
+
         scheduler.start()
 
         XCTAssertEqual(postDetails.events, [.next(10, [])])
@@ -111,9 +120,13 @@ class PostDetailsViewModelTests: XCTestCase {
             .drive(errorText)
             .disposed(by: disposeBag)
 
-        scheduler.createColdObservable([.next(0, post)])
-            .bind(to: viewModel.showPostsDetails)
+        let viewDidLoad = scheduler.createColdObservable([.next(0, ())])
+        viewDidLoad.asObservable()
+            .bind(to: viewModel.viewDidLoad)
             .disposed(by: disposeBag)
+
+        viewModel.currentPost.accept(post)
+
         scheduler.start()
 
         XCTAssertEqual(postDetails.events, [.next(20, [])])
