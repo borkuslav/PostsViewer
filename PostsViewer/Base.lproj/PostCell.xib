@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostCell" rowHeight="134" id="Mrd-9g-wcb" customClass="PostCell" customModule="PostsViewer" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="134"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Mrd-9g-wcb" id="w1A-9i-kbo">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="133.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o5V-gP-Put">
+                        <rect key="frame" x="16" y="8" width="382" height="20.5"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7yr-FP-wnG">
+                        <rect key="frame" x="16" y="30.5" width="382" height="16"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="o5V-gP-Put" secondAttribute="trailing" constant="16" id="AbF-La-esb"/>
+                    <constraint firstItem="7yr-FP-wnG" firstAttribute="leading" secondItem="o5V-gP-Put" secondAttribute="leading" id="N03-yA-xZM"/>
+                    <constraint firstItem="7yr-FP-wnG" firstAttribute="top" secondItem="o5V-gP-Put" secondAttribute="bottom" constant="2" id="Qoe-Fv-eUO"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="7yr-FP-wnG" secondAttribute="bottom" constant="8" id="R7p-iN-YmH"/>
+                    <constraint firstItem="o5V-gP-Put" firstAttribute="leading" secondItem="w1A-9i-kbo" secondAttribute="leading" constant="16" id="aLG-DG-kQI"/>
+                    <constraint firstItem="o5V-gP-Put" firstAttribute="top" secondItem="w1A-9i-kbo" secondAttribute="top" constant="8" id="gzE-iZ-4FT"/>
+                    <constraint firstItem="7yr-FP-wnG" firstAttribute="trailing" secondItem="o5V-gP-Put" secondAttribute="trailing" id="nRs-Ie-CDn"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="body" destination="7yr-FP-wnG" id="v2g-Bm-mTd"/>
+                <outlet property="title" destination="o5V-gP-Put" id="mtA-Hs-DC4"/>
+            </connections>
+            <point key="canvasLocation" x="-13.043478260869566" y="131.91964285714286"/>
+        </tableViewCell>
+    </objects>
+</document>

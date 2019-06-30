@@ -22,7 +22,7 @@ class PostDetailsViewController: UIViewController, Storyboarded {
     private lazy var loadingView = LoadingView(parentView: view)
     private let refreshControl = UIRefreshControl()
 
-    deinit{
+    deinit {
         debugPrint("## deinit PostDetailsViewController")
     }
 

@@ -20,7 +20,7 @@ class PostsViewController: UIViewController, Storyboarded {
 
     private lazy var loadingView = LoadingView(parentView: view)
     private let disposeBag = DisposeBag()
-    private let postCellIdentifier = "PostsCellIdentifier"
+    private let postCellIdentifier = "PostCell"
     private let refreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
@@ -39,10 +39,10 @@ class PostsViewController: UIViewController, Storyboarded {
     private func setupUI() {
         title = "Posts"
         view.backgroundColor = .white
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: postCellIdentifier)
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = .clear
         tableView.addSubview(refreshControl)
+        tableView.register(UINib(nibName: "PostCell", bundle: .main), forCellReuseIdentifier: postCellIdentifier)
     }
 
     private func setupBindings() {
@@ -75,10 +75,10 @@ class PostsViewController: UIViewController, Storyboarded {
 
         viewModel.posts            
             .drive(
-                tableView.rx.items(cellIdentifier: postCellIdentifier, cellType: UITableViewCell.self)
+                tableView.rx.items(cellIdentifier: postCellIdentifier, cellType: PostCell.self)
             ) { (_, post, cell) in
-                cell.textLabel?.numberOfLines = 0
-                cell.textLabel?.text = post.title
+                cell.title.text = post.title
+                cell.body.text = post.body
             }.disposed(by: disposeBag)
 
         tableView.rx.modelSelected(Post.self)
