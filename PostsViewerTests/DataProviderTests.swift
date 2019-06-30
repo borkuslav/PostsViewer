@@ -68,7 +68,7 @@ class DataProviderTests: XCTestCase {
     private func runGetPostsAndCheckResults(expected: [Recorded<Event<[Post]>>]) {
 
         let posts = scheduler.createObserver([Post].self)
-        dataProvider.getPosts()
+        dataProvider.getPosts(forUserId: nil)
             .bind(to: posts)
             .disposed(by: disposeBag)
 
@@ -85,7 +85,7 @@ class DataProviderTests: XCTestCase {
 
         apiEmitNextPosts(postsList, atTestTime: 20)
 
-        dataProvider.getPosts()
+        dataProvider.getPosts(forUserId: nil)
             .subscribe()
             .disposed(by: disposeBag)
 
@@ -103,7 +103,7 @@ class DataProviderTests: XCTestCase {
         let error = NetworkError.loadingResourceFailed(404)
         apiEmitErrorPosts(error, atTestTime: 20)
 
-        dataProvider.getPosts()
+        dataProvider.getPosts(forUserId: nil)
             .subscribe()
             .disposed(by: disposeBag)
 
@@ -149,7 +149,7 @@ class DataProviderTests: XCTestCase {
 class FakeAPIDataProvider: APIDataProviderType {
 
     var posts: Observable<[Post]>!
-    func getPosts() -> Observable<[Post]> {
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]> {
         return posts
     }
 
@@ -167,7 +167,7 @@ class FakeAPIDataProvider: APIDataProviderType {
 class FakeDatabaseDataProvider: DatabaseDataProviderType {
 
     var posts: Observable<[Post]>!
-    func getPosts() -> Observable<[Post]> {
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]> {
         return posts
     }
 

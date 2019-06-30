@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 protocol APIDataProviderType {
-    func getPosts() -> Observable<[Post]>
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]>
     func getUser(forUserId userId: Int) -> Observable<User>
     func getComments(forPostId postId: Int) -> Observable<[Comment]>
 }
@@ -45,8 +45,12 @@ final class APIDataProviderImp {
 
 extension APIDataProviderImp: APIDataProviderType {
 
-    func getPosts() -> Observable<[Post]> {
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]> {
+        if let userId = userId {
+            return getList(url: URL(string: "\(Constants.postsUrlString)?userId=\(userId)")!)
+        }
         return getList(url: URL(string: Constants.postsUrlString)!)
+
     }
 
     func getUser(forUserId userId: Int) -> Observable<User> {

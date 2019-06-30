@@ -21,7 +21,7 @@ enum Entities: String {
 }
 
 protocol DatabaseDataProviderType: class {
-    func getPosts() -> Observable<[Post]>
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]>
     func cachePosts(_ posts: [Post])
 
     func getUser(forUserId userId: Int) -> Observable<User?>
@@ -37,9 +37,14 @@ final class DatabaseDataProvider {
 
 extension DatabaseDataProvider: DatabaseDataProviderType {
 
-    func getPosts() -> Observable<[Post]> {
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]> {
+        var predicate: NSPredicate?
+        if let userId = userId {
+            predicate = NSPredicate(format: "userId == %d", userId)
+        }
         return DatabaseHelper.instance.get(
             entityName: Entities.post.name,
+            predicate: predicate,
             create: { (entity: PostEntity) -> Post in
                 return Post(
                     userId: Int(entity.userId),
@@ -124,7 +129,7 @@ extension DatabaseDataProvider: DatabaseDataProviderType {
                 commentEntity.postId = Int32(comment.postId)
                 commentEntity.name = comment.name
                 commentEntity.body = comment.body
-                commentEntity.email = comment.email                
+                commentEntity.email = comment.email
          })
     }
 }

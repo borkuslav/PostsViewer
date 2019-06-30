@@ -78,7 +78,7 @@ class PostsViewModel: PostsViewModelType {
             _refreshPosts.asObservable()
         ).flatMap({ _ in
             return postsProvider
-                .getPosts()
+                .getPosts(forUserId: nil)
                 .materialize()
         }).share()
 

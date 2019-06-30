@@ -240,7 +240,7 @@ private class PostsProviderFake: PostsProvider {
 
     var posts: Observable<[Post]>!
 
-    func getPosts() -> Observable<[Post]> {
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]> {
         return posts
     }
 }

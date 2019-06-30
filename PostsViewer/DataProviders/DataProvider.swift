@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 
 protocol PostsProvider {
-    func getPosts() -> Observable<[Post]>
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]>
 }
 
 protocol PostsDetailsProvider {
@@ -34,9 +34,9 @@ final class DataProvider {
 
 extension DataProvider: DataProviderType {
 
-    func getPosts() -> Observable<[Post]> {
+    func getPosts(forUserId userId: Int?) -> Observable<[Post]> {
         return apiDataProvider
-            .getPosts()
+            .getPosts(forUserId: userId)
             .do(afterNext: { [weak self] posts in
                 self?.databaseDataProvider.cachePosts(posts)
             }).catchError({ [weak self] error -> Observable<[Post]> in
@@ -44,7 +44,7 @@ extension DataProvider: DataProviderType {
                     return .error(error)
                 }
                 return self.databaseDataProvider
-                    .getPosts()
+                    .getPosts(forUserId: userId)
                     .flatMap({ posts -> Observable<[Post]> in
                         if posts.isEmpty {
                             return .error(error)
@@ -86,8 +86,6 @@ extension DataProvider: DataProviderType {
         return Observable.zip(user, comments)
             .flatMap { (user, comments) -> Observable<PostDetails> in
                 return .just(PostDetails(post: post, user: user, comments: comments))
-            }.catchError({ (error) -> Observable<PostDetails> in // TODO: remove debug code
-                return .error(error)
-            })
+            }
     }
 }
