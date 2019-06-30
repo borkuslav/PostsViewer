@@ -37,41 +37,35 @@ class DataProviderTests: XCTestCase {
     }
 
     func test_LoadPostsFromAPI_OnSuccess_EmitPosts() {
-        let postsList: [Post] = TestDataParser().loadAndParsePosts()!
-        apiDataProvider.posts = scheduler
-            .createColdObservable([.next(10, postsList)])
-            .asObservable()
 
-        runTestAndCheckGetPostResults(expected: [.next(10, postsList)])
+        let postsList: [Post] = TestDataParser().loadAndParsePosts()!
+        apiEmitNextPosts(postsList, atTestTime: 10)
+
+        runGetPostsAndCheckResults(expected: [.next(10, postsList)])
     }
 
     func test_FailLoadingPostsFromAPI_WhenNoCachedPosts_EmitError() {
-        let error = NetworkError.operationFailedPleaseRetry
-        apiDataProvider.posts = scheduler
-            .createColdObservable([.error(10, error)])
-            .asObservable()
-        databaseDataProvider.posts = scheduler
-            .createColdObservable([.next(20, [])])
-            .asObservable()
 
-        runTestAndCheckGetPostResults(expected: [.error(30, error)])
+        let error = NetworkError.operationFailedPleaseRetry
+        apiEmitErrorPosts(error, atTestTime: 10)
+
+        databaseEmitNextPosts([], atTestTime: 20)
+
+        runGetPostsAndCheckResults(expected: [.error(30, error)])
     }
 
     func test_FailLoadingPostsFromAPI_WhenCachedPostsAvailable_EmitPosts() {
+
         let error = NetworkError.operationFailedPleaseRetry
+        apiEmitErrorPosts(error, atTestTime: 10)
+
         let postsList = TestDataParser().loadAndParsePosts()!
+        databaseEmitNextPosts(postsList, atTestTime: 20)
 
-        apiDataProvider.posts = scheduler
-            .createColdObservable([.error(10, error)])
-            .asObservable()
-        databaseDataProvider.posts = scheduler
-            .createColdObservable([.next(20, postsList)])
-            .asObservable()
-
-        runTestAndCheckGetPostResults(expected: [.next(30, postsList)])
+        runGetPostsAndCheckResults(expected: [.next(30, postsList)])
     }
 
-    private func runTestAndCheckGetPostResults(expected: [Recorded<Event<[Post]>>]) {
+    private func runGetPostsAndCheckResults(expected: [Recorded<Event<[Post]>>]) {
 
         let posts = scheduler.createObserver([Post].self)
         dataProvider.getPosts()
@@ -85,16 +79,11 @@ class DataProviderTests: XCTestCase {
 
     func test_LoadPostsFromAPI_OnSuccess_CacheData() {
 
-        let cachePosts = scheduler.createObserver([Post].self)
-        databaseDataProvider.cachePosts
-            .asObservable()
-            .bind(to: cachePosts)
-            .disposed(by: disposeBag)
+        let cachePosts = createCachePostsObserver()
 
         let postsList = TestDataParser().loadAndParsePosts()!
-        apiDataProvider.posts = scheduler
-            .createColdObservable([.next(20, postsList)])
-            .asObservable()
+
+        apiEmitNextPosts(postsList, atTestTime: 20)
 
         dataProvider.getPosts()
             .subscribe()
@@ -107,20 +96,12 @@ class DataProviderTests: XCTestCase {
 
     func test_FailLoadingPostsFromAPI_DontCacheData() {
 
-        databaseDataProvider.posts = scheduler
-            .createColdObservable([.next(0, [])])
-            .asObservable()
+        databaseEmitNextPosts([], atTestTime: 0)
 
-        let cachePosts = scheduler.createObserver([Post].self)
-        databaseDataProvider.cachePosts
-            .asObservable()
-            .bind(to: cachePosts)
-            .disposed(by: disposeBag)
+        let cachePosts = createCachePostsObserver()
 
         let error = NetworkError.loadingResourceFailed(404)
-        apiDataProvider.posts = scheduler
-            .createColdObservable([.error(20, error)])
-            .asObservable()
+        apiEmitErrorPosts(error, atTestTime: 20)
 
         dataProvider.getPosts()
             .subscribe()
@@ -129,6 +110,39 @@ class DataProviderTests: XCTestCase {
         scheduler.start()
 
         XCTAssertEqual(cachePosts.events, [])
+    }
+
+    private func createCachePostsObserver() -> TestableObserver<[Post]> {
+        let cachePosts = scheduler.createObserver([Post].self)
+        databaseDataProvider.cachePosts
+            .asObservable()
+            .bind(to: cachePosts)
+            .disposed(by: disposeBag)
+        return cachePosts
+    }
+
+    private func databaseEmitNextPosts(_ posts: [Post], atTestTime testTime: TestTime) {
+        databaseDataProvider.posts = scheduler
+            .createColdObservable([.next(testTime, posts)])
+            .asObservable()
+    }
+
+    private func databaseEmitErrorPosts(_ error: Error, atTestTime testTime: TestTime) {
+        databaseDataProvider.posts = scheduler
+            .createColdObservable([.error(testTime, error)])
+            .asObservable()
+    }
+
+    private func apiEmitNextPosts(_ posts: [Post], atTestTime testTime: TestTime) {
+        apiDataProvider.posts = scheduler
+            .createColdObservable([.next(testTime, posts)])
+            .asObservable()
+    }
+
+    private func apiEmitErrorPosts(_ error: Error, atTestTime testTime: TestTime) {
+        apiDataProvider.posts = scheduler
+            .createColdObservable([.error(testTime, error)])
+            .asObservable()
     }
 }
 
