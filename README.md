@@ -8,6 +8,7 @@ I really hope that someone will benefit from this, if so, I can't wait to hear a
 
 ### The APP
 It's very simple, it has two screens: one for displaying list of posts, second one to display post details. Also, user can display list of posts from particular user. UI is very simple and it was not my main focus ;)
+App uses CoreData caching and displays posts (if available) offline.
 
 ### MVVM-C 
 Some stuff will appear here soon...
